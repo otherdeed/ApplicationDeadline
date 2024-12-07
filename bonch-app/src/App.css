@@ -1,0 +1,10 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Задаем высоту 100% для body */
+}
+.App{
+    display: flex;
+    flex-direction: column; /* Располагаем элементы по вертикали */
+    height: 100vh; /* Высота всего окна браузера */
+}

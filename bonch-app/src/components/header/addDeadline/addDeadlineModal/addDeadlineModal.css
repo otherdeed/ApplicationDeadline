@@ -1,0 +1,4 @@
+.addDeadline{
+    display: flex;
+    flex-direction: column;
+}

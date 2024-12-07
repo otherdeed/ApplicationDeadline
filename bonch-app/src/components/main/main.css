@@ -1,0 +1,12 @@
+.main-container{
+    flex: 1;
+    overflow-y: auto; 
+    padding: 20px; 
+    background-color: #ffffff;
+    margin-bottom: 9%;
+}
+.order-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
