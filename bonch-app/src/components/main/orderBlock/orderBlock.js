@@ -1,47 +1,49 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import './orderBlock.css';
 import OrderModal from '../orderModal/orderModal';
 import axios from 'axios';
-function OrderBlock({group,id,subject,deadline, description,isCompleted, creatorId, userId}) {
+
+function OrderBlock({ group, id, subject, deadline, description, isCompleted, creatorId, userId }) {
     const [isModalOpen, setModalOpen] = useState(false);
-    // Функция для открытия модального окна и увеличения просмотров
+
+    // Функция для открытия модального окна
     function openOrderDesc() {
         setModalOpen(true);
     }
 
+    // Функция для закрытия модального окна
     function closeOrderDesc() {
         setModalOpen(false);
     }
-    async function deleteDeadline(){
-        await axios.post('http://localhost:3001/deleteDeadline',{
-            groupName:group.name, 
-            deadlineId:id
-        })
+
+    // Функция для удаления дедлайна
+    async function deleteDeadline() {
+        window.location.reload();
+        try {
+            await axios.post('http://localhost:3001/deleteDeadline', {
+                groupName: group.name,
+                deadlineId: id
+            });
+            // Перезагрузка страницы после успешного удаления
+        } catch (error) {
+            console.error('Ошибка при удалении дедлайна:', error);
+        }
     }
-    const Deadline = { id,subject,deadline, description,isCompleted};
-    if(creatorId === userId){
-        return (
-            <>
-                <div className="order-block" onClick={openOrderDesc}>
-                    <button onClick={deleteDeadline}>x</button>
-                    <div className="order-preview">{subject}</div>
-                    <div className="order-price">{deadline}</div>
-                </div>
-                <OrderModal isOpen={isModalOpen} onClose={closeOrderDesc} Deadline={Deadline} />
-            </>
-        );
-    }else{
-        return (
-            <>
-                <div className="order-block" onClick={openOrderDesc}>
-                    <div className="order-preview">{subject}</div>
-                    <div className="order-price">{deadline}</div>
-                </div>
-                <OrderModal isOpen={isModalOpen} onClose={closeOrderDesc} Deadline={Deadline} />
-            </>
-        );
-    }
-            
+
+    const Deadline = { id, subject, deadline, description, isCompleted };
+
+    return (
+        <>
+            {creatorId === userId && (
+                <button onClick={deleteDeadline}>x</button>
+            )}
+            <div className="order-block" onClick={openOrderDesc}>
+                <div className="order-preview">{subject}</div>
+                <div className="order-price">{deadline}</div>
+            </div>
+            <OrderModal isOpen={isModalOpen} onClose={closeOrderDesc} Deadline={Deadline} />
+        </>
+    );
 }
 
 export default OrderBlock;
