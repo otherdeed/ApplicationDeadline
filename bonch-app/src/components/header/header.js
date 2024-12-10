@@ -2,14 +2,14 @@ import './header.css'
 import React from 'react'
 import AddDeadline from './addDeadline/addDeadline'
 function Header({group, user}){
-    if(group.creator.id === user.id){
+    if(group.creator_id === user.id){
         return (
             <div className="header-container">
                 {group.name}
-                <AddDeadline group={group }/>
+                <AddDeadline group={group}/>
             </div>
         )
-    } else if(group.creator.id !== user.id){
+    } else if(group.creator_id !== user.id){
         return (
             <div className="header-container">
                 {group.name}

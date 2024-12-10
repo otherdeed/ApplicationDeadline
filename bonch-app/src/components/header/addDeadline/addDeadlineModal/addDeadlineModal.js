@@ -8,29 +8,26 @@ function AddDeadlineModal({ isOpen, onClose, group }) {
     const [deadline, setDeadline] = useState('');
     async function addDeadline() {
         try {
-            const response = await axios.post('http://localhost:3001/addDeadline', {
-                groupName: group.name,
-                deadline: {
-                    id: Date.now()-Math.floor(Math.random() * 1000),
-                    subject: subject,
-                    deadline: deadline,
-                    description: description,
-                    isCompleted: false
-                }
+            const response = await axios.post('http://localhost/src/server/routes/createDeadLine.php', {
+                group_id: group.id,
+                subject: subject,
+                description: description,
+                deadline: deadline,
             });
             console.log('Дедлайн успешно добавлен:', response.data);
-            try {
-                window.location.reload();
-                const notifyResponse = await axios.post('http://localhost:3001/sendDeadlineMess', {
-                    groupName: group.name,
-                    members: group.members // Исправлено: 'memebers' на 'members'
-                });
-                console.log('Уведомления успешно отправлены:', notifyResponse.data);
-            } catch (error) {
-                console.error('Ошибка с POST sendDeadlineMess:', error.response ? error.response.data : error.message);
-                alert('Ошибка при отправке уведомлений');
-                return;
-            }
+            console.log(response);
+            // try {
+            //     //window.location.reload();
+            //     const notifyResponse = await axios.post('http://localhost:3001/sendDeadlineMess', {
+            //         groupName: group.name,
+            //         members: group.members // Исправлено: 'memebers' на 'members'
+            //     });
+            //     console.log('Уведомления успешно отправлены:', notifyResponse.data);
+            // } catch (error) {
+            //     console.error('Ошибка с POST sendDeadlineMess:', error.response ? error.response.data : error.message);
+            //     alert('Ошибка при отправке уведомлений');
+            //     return;
+            // }
         } catch (error) {
             console.error('Ошибка с POST addDeadline:', error.response ? error.response.data : error.message);
             alert('Ошибка при добавлении дедлайна');

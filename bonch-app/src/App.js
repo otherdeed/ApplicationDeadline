@@ -11,7 +11,7 @@ function App() {
   const [group, setGroup] = useState({
     name: null,
     description: null,
-    creator: { id: null, name: null, username: null },
+    creator: null,
     members: [],
     deadline:[]
   });
