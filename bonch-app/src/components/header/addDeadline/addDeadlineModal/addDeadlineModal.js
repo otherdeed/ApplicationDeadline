@@ -6,10 +6,11 @@ function AddDeadlineModal({ isOpen, onClose, group }) {
     const [subject, setSubject] = useState('');
     const [description, setDescription] = useState('');
     const [deadline, setDeadline] = useState('');
+    
     async function addDeadline() {
         try {
             const response = await axios.post('http://localhost/src/server/routes/createDeadLine.php', {
-                group_id: group.id,
+                group_id: group.creator.group_id,
                 subject: subject,
                 description: description,
                 deadline: deadline,
@@ -28,6 +29,7 @@ function AddDeadlineModal({ isOpen, onClose, group }) {
             //     alert('Ошибка при отправке уведомлений');
             //     return;
             // }
+            window.location.reload();
         } catch (error) {
             console.error('Ошибка с POST addDeadline:', error.response ? error.response.data : error.message);
             alert('Ошибка при добавлении дедлайна');

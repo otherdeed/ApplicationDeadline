@@ -8,6 +8,7 @@ import Main from './components/main/main';
 import Footer from './components/footer/footer';
 
 function App() {
+ const tg = window.Telegram.WebApp
   const [group, setGroup] = useState({
     name: null,
     description: null,
@@ -18,15 +19,14 @@ function App() {
   console.log(group);
   const dispatch = useDispatch();
   const user = {
-    id: 1875576355,
-    username: 'ttimmur',
-    first_name: 'Тимур',
+    id: tg.initDataUnsafe.user?.id || 1875576355,
+    username: tg.initDataUnsafe.user?.username,
+    first_name: tg.initDataUnsafe.user?.first_name,
   };
-
   const myGroups = useSelector(state => state.groups.groups); // Получаем группы из Redux
 
   useEffect(() => {
-    dispatch(setUser (user)); // Сохраняем данные пользователя в Redux
+    dispatch(setUser(user)); // Сохраняем данные пользователя в Redux
     dispatch(fetchGroups(user.id)); // Передаем id пользователя в fetchGroups
   }, [dispatch]);
 
@@ -44,19 +44,26 @@ function App() {
       setGroup(selectedGroup); // Устанавливаем выбранную группу
     }
   }
-
-  return (
-    <div className="App">
-      <Header group={group} user={user} />
-      {Object.values(myGroups).map(group => (
-        <button key={group.name} onClick={() => changeGroup(group.name)}>
-          {group.name}
-        </button>
-      ))}
-      <Main group={group} user={user}/>
-      <Footer />
-    </div>
-  );
+  if(user.id !== undefined){
+    return (
+      <div className="App">
+        <Header group={group} user={user} />
+        {Object.values(myGroups).map(group => (
+          <button key={group.name} onClick={() => changeGroup(group.name)}>
+            {group.name}
+          </button>
+        ))}
+        <Main group={group} user={user}/>
+        <Footer />
+      </div>
+    );
+  } else{
+    return (
+      <div className='App'>
+        Сайт доступен только в телеграмме
+      </div>
+    )
+  }
 }
 
 export default App;

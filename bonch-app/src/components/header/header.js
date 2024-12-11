@@ -2,14 +2,14 @@ import './header.css'
 import React from 'react'
 import AddDeadline from './addDeadline/addDeadline'
 function Header({group, user}){
-    if(group.creator_id === user.id){
+    if(group.creator?.id === user.id && user.id !== null  && user.id !== undefined  && user.id !== 'undefined'  && user.id !== 'null'  && user.id !== 'null'){
         return (
             <div className="header-container">
                 {group.name}
                 <AddDeadline group={group}/>
             </div>
         )
-    } else if(group.creator_id !== user.id){
+    } else if(group.creator?.id !== user.id){
         return (
             <div className="header-container">
                 {group.name}
@@ -18,7 +18,7 @@ function Header({group, user}){
     } else{
         return (
             <div className="header-container">
-                Произошла ошибка
+                У вас нет групп
             </div>
         )
     }

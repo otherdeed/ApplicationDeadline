@@ -1,6 +1,6 @@
 <?php
 header("Access-Control-Allow-Origin: *"); // Разрешает запросы с любых источников
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS"); // Разрешает указанные методы
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS, DELETE"); // Разрешает указанные методы
 header("Access-Control-Allow-Headers: Content-Type, Authorization"); // Разрешает определенные заголовки
 
 require_once '../db/database.php';

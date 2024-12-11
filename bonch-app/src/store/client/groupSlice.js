@@ -1,12 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
 // Создаем асинхронное действие для загрузки групп
 export const fetchGroups = createAsyncThunk('groups/fetchGroups', async (userId) => {
-    const response = await axios.post('http://localhost/src/server/routes/getGroup.php', {
-        id: userId // Передаем идентификатор пользователя
-    });
-    return response.data; // Предполагаем, что сервер возвращает массив групп
+    try {
+        const response = await axios.post('http://localhost/src/server/routes/getGroup.php', {
+            id: userId // Передаем идентификатор пользователя
+        });
+        return response.data; // Предполагаем, что сервер возвращает массив групп
+    } catch (error) {
+        // Handle error appropriately
+        console.error('Error fetching groups:', error);
+        throw error; // Rethrow the error for further handling in the slice
+    }
 });
 
 const groupSlice = createSlice({
