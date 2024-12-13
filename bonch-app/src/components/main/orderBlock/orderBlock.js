@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './orderBlock.css';
 import OrderModal from '../orderModal/orderModal';
+import DeleteDeadline from '../deleteDeadline/deleteDeadline';
 import axios from 'axios';
 
 function OrderBlock({ group, id, subject, deadline, description, isCompleted, creatorId, userId }) {
     const [isModalOpen, setModalOpen] = useState(false);
+    const [isModalCloseOpen, setCloseModalOpen] = useState(false);
     const [timeLeft, setTimeLeft] = useState(''); // Состояние для оставшегося времени
     const [blockColor, setBlockColor] = useState(''); // Состояние для цвета блока
 
@@ -17,25 +19,13 @@ function OrderBlock({ group, id, subject, deadline, description, isCompleted, cr
     function closeOrderDesc() {
         setModalOpen(false);
     }
-
-    // Функция для удаления дедлайна
-    async function deleteDeadline() {
-        console.log('дедлайн:', id);
-        console.log('группа:', group.creator.group_id);
-        try {
-            const response = await axios.delete('http://localhost/src/server/routes/deleteDeadline.php', {
-                data: {
-                    groupId: group.creator.group_id,
-                    deadlineId: id
-                }
-            });
-            console.log('Delete Deadline:', response.data); 
-            window.location.reload(); // Раскомментируйте, если хотите перезагрузить страницу
-        } catch (error) {
-            console.error('Ошибка при удалении дедлайна:', error);
-        }
+    function openCloseModal(){
+        setCloseModalOpen(true)
     }
-
+    function closeCloseModal(){
+        setCloseModalOpen(false)
+    }
+    // Функция для удаления дедлайна
     const Deadline = { id, subject, deadline, description, isCompleted };
 
     // Функция для вычисления оставшегося времени
@@ -57,10 +47,10 @@ function OrderBlock({ group, id, subject, deadline, description, isCompleted, cr
             } else {
                 setTimeLeft(`${hoursLeft} ч`); // Если осталось меньше дня
                 // Устанавливаем цвет в зависимости от оставшегося времени
-                if (difference < 3600000) { // Менее 1 часа
-                    setBlockColor('orange');
+                if (difference < 3600000) { 
+                    setBlockColor('black');
                 } else {
-                    setBlockColor('yellow'); // Менее 1 дня
+                    setBlockColor('rgb(247 112 112)'); // Менее 1 дня
                 }
             }
         }
@@ -75,13 +65,24 @@ function OrderBlock({ group, id, subject, deadline, description, isCompleted, cr
 
     return (
         <>
-            {creatorId === userId && (
-                <button onClick={deleteDeadline}>x</button>
-            )}
-            <div className="order-block" onClick={openOrderDesc} style={{ backgroundColor: blockColor }}>
-                <div className="order-preview">{subject}</div>
-                <div className="order-price">{deadline}</div>
-                <div className="time-left">Осталось: {timeLeft}</div> {/* Отображаем оставшееся время */}
+            <div className="order-block" style={{ backgroundColor: blockColor }}>
+                <div className='deleteButton' onClick={openCloseModal} >
+                    {creatorId === userId && (
+                        <button>
+                            <div>
+                            <div class="icon">
+                                <div class="cross"></div>
+                            </div>
+                                <DeleteDeadline onClose={closeCloseModal} isOpen={isModalCloseOpen} group={group} id={id}/>
+                            </div>
+                        </button>
+                    )}
+                </div>
+                <div onClick={openOrderDesc}>
+                    <div className="order-preview">{subject}</div>
+                    <div className="order-price">{deadline}</div>
+                    <div className="time-left">Осталось: {timeLeft}</div> {/* Отображаем оставшееся время */}
+                </div>
             </div>
             <OrderModal isOpen={isModalOpen} onClose={closeOrderDesc} Deadline={Deadline} />
         </>

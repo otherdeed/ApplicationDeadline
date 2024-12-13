@@ -9,17 +9,31 @@
     justify-content: center;
     align-items: center;
     z-index: 1000; /* Убедитесь, что модальное окно поверх других элементов */
+    font-family: 'AKONY', sans-serif;
 }
 
 .modal-content {
     background-color: white;
     padding: 20px;
-    border-radius: 8px;
-    width: 80%; /* Ширина модального окна */
-    max-width: 600px; /* Максимальная ширина */
+    height: 80%;
+    border-radius: 25px;
+    width: 70%;
+    background-color:#FFFFFF66 ;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 button {
     margin-top: 20px;
+}
+.btnCloseModal{
+    margin-top: 20px;
+    height: 60px;
+    border-radius: 20px;
+    font-family: 'AKONY', sans-serif;
+    margin-bottom: 20px;
+    border: none;
+    position: absolute;
+    top: 77%;
+    width: 70%;
+    border: 2px solid black;
 }

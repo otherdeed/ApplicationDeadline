@@ -1,8 +1,33 @@
 .header-container{
-    background-color: aqua;
     text-align: center;
-    height: 50px;
-    font-size: 40px;
+    height: 60px;
     display: flex;
     justify-content: center;
+    justify-content: space-between;
+    margin: 2%;
+}
+.changeGroup {
+    background-color: #d9d9d9;
+    border-radius: 15px;
+    width: 12%;
+    display: flex;
+    font-size: large;
+    justify-content: center;
+    align-items: center;
+}
+/* .changeGroup button{
+    background-color: #d9d9d9;
+    border: none;
+    font-size: 25px;
+    margin: 0;
+} */
+
+.groupName{
+    background-color: #d9d9d9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    width: 85%;
+    border-radius: 25px;
 }

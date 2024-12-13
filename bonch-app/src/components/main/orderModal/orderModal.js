@@ -22,7 +22,7 @@ function OrderModal({ isOpen, onClose, Deadline }) {
                 <h2>{Deadline.subject}</h2>
                 <p>Описание: {Deadline.description}</p>
                 <p>Крайний срок: {Deadline.deadline}</p>
-                <button onClick={onClose}>Закрыть</button>
+                <button className="btnCloseModal"onClick={onClose}>Закрыть</button>
             </div>
         </div>
     );

@@ -11,8 +11,10 @@ function AddDeadline({group}){
         setModalOpen(false);
     }
     return(
-        <div>
-            <button onClick={openDeadline}>X</button>
+        <div  onClick={openDeadline}>
+            <div class="icon">
+                <div class="plus"></div>
+            </div>  
             <AddDeadlineModal isOpen={isModalOpen} onClose={closeDeadline} group={group}/>
         </div>
     )

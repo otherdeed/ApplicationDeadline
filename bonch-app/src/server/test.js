@@ -1,8 +1,65 @@
+const http = require('http');
+const url = require('url');
+const axios = require('axios');
 const TelegramBot = require('node-telegram-bot-api');
-const axios = require('axios'); // Импортируем axios
 require('dotenv').config();
+const token = process.env.TELEGRAM_BOT_TOKEN;
+const bot = new TelegramBot(token, { polling: true });
 
-const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: true });
+const server = http.createServer((req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+        res.writeHead(204);
+        return res.end();
+    }
+
+    const parsedUrl = url.parse(req.url, true);
+    const path = parsedUrl.pathname.replace(/^\/+|\/+$/g, '');
+    const method = req.method.toLowerCase();
+
+    if (method === 'post') {
+        let body = '';
+
+        req.on('data', chunk => {
+            body += chunk.toString();
+        });
+
+        req.on('end', () => {
+            let parsedBody;
+            try {
+                parsedBody = JSON.parse(body);
+            } catch (error) {
+                res.writeHead(400); // Bad Request
+                return res.end(JSON.stringify({ error: 'Некорректный JSON' }));
+            }
+
+         
+            if(path === 'sendDeadlineMess'){
+                const {groupName, members} = parsedBody
+                members.forEach(member => {
+                    bot.sendMessage(member, `Новый дедлайн в группе "${groupName}"`);
+                })
+            }else {
+                res.writeHead(404);
+                return res.end(JSON.stringify({ error: 'Не найдено' }));
+            }
+        });
+    }
+    if (method !== 'get' && method !== 'post' && method !== 'put') {
+        res.writeHead(405);
+        res.end(JSON.stringify({ error: 'Метод не разрешен' }));
+    }
+});
+
+// Запускаем сервер
+const PORT = 3001;
+server.listen(PORT, () => {
+    console.log(`Сервер запущен на http://localhost:${PORT}`);
+});
+
 
 const waitingForGroupInfo = {};
 const commands = [
@@ -27,18 +84,19 @@ bot.on('message', async (msg) => {
             }, {
                 headers: { 'Content-Type': 'application/json' },
             });
-            bot.sendMessage(chatId, 'Добро пожаловать! Управляйте своими дедлайнами с помощью групп.', {
+            await bot.sendMessage(chatId, `👋 Привет! Добро пожаловать в **DeadlineMinder** — ваш надежный помощник в создании и управлении дедлайнов!\n\n🗓️ С нами вы сможете:\n- Легко отслеживать дедлайны\n- Создавать группы и присоединятся к ним \n- Получать напоминания о предстоящих дедлайнов\n\nЕсли у вас есть вопросы или вам нужна помощь, просто напишите /help, и я с радостью вам помогу!\n\nДавайте сделаем вашу продуктивность еще выше! 🚀`, {
                 reply_markup: { keyboard: [['Создать группу'], ['Присоединиться к группе'], ['Удалиться из группы']], one_time_keyboard: true },
             });
+            await bot.sendMessage(chatId, 'Для начала создайте или присоединяйтесь к группе')
         } catch (error) {
             console.error('Ошибка добавления пользователя:', error);
         }
     } else if (text === 'Создать группу' || text === '/create') {
-        bot.sendMessage(chatId, 'Введите название группы:');
+        bot.sendMessage(chatId, 'Придумайте название группы:');
         waitingForGroupInfo[chatId] = { step: 'name' };
     } else if (waitingForGroupInfo[chatId]?.step === 'name') {
         waitingForGroupInfo[chatId].name = text.trim();
-        bot.sendMessage(chatId, 'Введите описание группы:');
+        bot.sendMessage(chatId, 'Придумайте описание группы:');
         waitingForGroupInfo[chatId].step = 'desc';
     } else if (waitingForGroupInfo[chatId]?.step === 'desc') {
         const { name } = waitingForGroupInfo[chatId];
@@ -58,7 +116,8 @@ bot.on('message', async (msg) => {
                     ]
                 },
             });
-            await bot.sendMessage(chatId, `Ваш уникальный id группы: ${newGroup.data.id}`);
+            await bot.sendMessage(chatId, `Ваш уникальный ID группы: ${newGroup.data.id}`);
+            await bot.sendMessage(chatId, 'ID группы нужен для новых участников, которые хотят присоединиться к вашей группе.');
         } catch (error) {
             console.error('Ошибка создания группы:', error);
             console.error('JSON parse error:', error);
@@ -108,7 +167,7 @@ bot.on('message', async (msg) => {
     } else if (waitingForGroupInfo[chatId]?.step === 'deadlineDate') {
         const deadlineDate = text.trim();
         const datePattern = /^\d{4}-\d{2}-\d{2}$/;
-        if (datePattern.test(deadlineDate)) {
+        if (datePattern.test(deadlineDate) && new Date(deadlineDate) > new Date()) {
             waitingForGroupInfo[chatId].deadlineDate = deadlineDate;
             try {
                 const response = await axios.post('http://localhost/src/server/routes/getGroup.php', {
@@ -128,7 +187,7 @@ bot.on('message', async (msg) => {
                             deadline: waitingForGroupInfo[chatId].deadlineDate,
                         });
                         console.log('Дедлайн успешно добавлен:', response.data);
-                        bot.sendMessage(chatId, `Дедлайн "${waitingForGroupInfo[chatId].deadlineName}" добавлен в группу с ID: ${waitingForGroupInfo[chatId].groupId}!`);
+                        bot.sendMessage(chatId, `Дедлайн "${waitingForGroupInfo[chatId].deadlineName}" добавлен в группу с ID: ${waitingForGroupInfo[chatId].groupId}`);
                     }catch (error) {
                         console.error('Ошибка с POST addDeadline:', error.response ? error.response.data : error.message);
                         delete waitingForGroupInfo[chatId];
@@ -152,11 +211,9 @@ bot.on('message', async (msg) => {
             });
             const myGruop = response.data.filter(group => group.creator.id === chatId);
             const otherGruop = response.data.filter(group => group.creator.id !== chatId);
-            await bot.sendMessage(chatId, 'Ваши созданные группы:');
             myGruop.forEach(async element => {
                 await bot.sendMessage(chatId, `${element.name} ID: ${element.creator.group_id}`)
             })
-            bot.sendMessage(chatId,'Остальные группы:');
             otherGruop.forEach(async element=> {
                 await bot.sendMessage(chatId, `${element.name} ID: ${element.creator.group_id}`)
             })
@@ -170,7 +227,7 @@ bot.on('message', async (msg) => {
     } else if (waitingForGroupInfo[chatId]?.step === 'leaveGroup') {
         const groupId = text.trim();
         try {
-            await axios.delete('http://localhost/src/server/routes/deleteGroup.php', {
+            await axios.delete('http://localhost/scr/server/routes/deleteGroup.php', {
                 headers: { 'Content-Type': 'application/json' },
                 data: { 
                     id: groupId,

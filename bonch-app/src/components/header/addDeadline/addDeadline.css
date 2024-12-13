@@ -1,0 +1,11 @@
+.addDeadline{
+    border: none;
+    border-color: #37AD00;
+}
+.icon {
+    width: 40px; /* Ширина иконки */
+    height: 40px; /* Высота иконки */
+    color: white; /* Цвет иконки */
+    cursor: pointer; /* Указатель мыши */
+    margin: 10px; /* Отступы между иконками */
+}
