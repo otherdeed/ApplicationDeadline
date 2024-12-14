@@ -2,10 +2,8 @@ import './deleteDeadline.css'
 import axios from 'axios';
 function DeleteDeadline({onClose, isOpen, id, group}){
         async function deleteDeadline() {
-            console.log('дедлайн:', id);
-            console.log('группа:', group.creator.group_id);
             try {
-                const response = await axios.delete('https://deadlineminder.ru/server/routes/deleteDeadline.php', {
+                const response = await axios.delete('/server/routes/deleteDeadline.php', {
                     data: {
                         groupId: group.creator.group_id,
                         deadlineId: id

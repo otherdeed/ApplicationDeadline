@@ -3,13 +3,15 @@ import { useDispatch } from 'react-redux';
 import { setMyGroup } from '../../../store/client/myGroupSlice';
 function ChangeGroup({isOpen, onClose, myGroups}){
         const dispatch = useDispatch();
-    
         const changeGroup = (name) => {
             const selectedGroup = Object.values(myGroups).find(group => group.name === name);
             if (selectedGroup) {
+                // Получаем индекс выбранной группы
+                const index = Object.values(myGroups).findIndex(group => group.name === name);
+                localStorage.setItem('group',index)
                 dispatch(setMyGroup(selectedGroup)); // Сохраняем выбранную группу в Redux
-            }
-        };
+            }     
+        };        
     if (!isOpen) return null; 
     return (
         <div className="modal-overlayGroup" onClick={onClose}>

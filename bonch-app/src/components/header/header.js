@@ -1,7 +1,7 @@
 import './header.css';
 import React, {useState} from 'react';
 import ChangeGroup from './changeGroup/changeGroup';
-function Header({ group, user, myGroups }) {
+function Header({ group, user, myGroups, changeGroup }) {
     const [isModalOpen, setModalOpen] = useState(false);
     function openModalGroup() {
         setModalOpen(true);
@@ -16,7 +16,7 @@ function Header({ group, user, myGroups }) {
         return (
             <div className="header-container">
                 <div className='changeGroup' onClick={openModalGroup}>
-                    <ChangeGroup myGroups={myGroups} group={group} isOpen={isModalOpen} onClose={closeModalGroup}/>
+                    <ChangeGroup  myGroups={myGroups} group={group} isOpen={isModalOpen} onClose={closeModalGroup} changeGroup={changeGroup}/>
                     |||
                 </div>
                 <div className='groupName'>

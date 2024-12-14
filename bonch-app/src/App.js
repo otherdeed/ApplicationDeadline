@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect,} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchGroups } from './store/client/groupSlice';
 import { setUser  } from './store/client/userSlice';
@@ -11,7 +11,7 @@ function App() {
  const tg = window.Telegram.WebApp
   const dispatch = useDispatch();
   const user = {
-    id: tg.initDataUnsafe.user?.id || 1875576355,
+    id: tg.initDataUnsafe.user?.id,
     username: tg.initDataUnsafe.user?.username,
     first_name: tg.initDataUnsafe.user?.first_name,
   };
@@ -25,17 +25,10 @@ function App() {
   useEffect(() => {
     // Устанавливаем первую группу или нулевую группу при изменении myGroups
     if (myGroups && Object.keys(myGroups).length > 0) {
-      const firstGroup = Object.values(myGroups)[0]; // Получаем первую группу
+      const firstGroup = Object.values(myGroups)[localStorage.getItem('group')] || Object.values(myGroups)[0] ; // Получаем первую группу
       dispatch(setMyGroup(firstGroup)); // Сохраняем выбранную группу в Redux
     }
   }, [myGroups]);
-
-  async function changeGroup(name) {
-    const selectedGroup = Object.values(myGroups).find(group => group.name === name);
-    if (selectedGroup) {
-      dispatch(setMyGroup(selectedGroup)); // Сохраняем выбранную группу в Redux
-    }
-  }
   if(user.id !== undefined){
     return (
       <div className="App">

@@ -2,8 +2,15 @@ import React, { useState } from 'react';
 import './main.css';
 import OrderBlock from './orderBlock/orderBlock';
 import AddDeadline from '../header/addDeadline/addDeadline';
-function Main({ group, user }) {
-    const deadlines = group.deadline || [];
+import { useSelector } from 'react-redux';
+
+function Main({ user }) {
+    // Получаем данные из состояния Redux
+    const groupName = useSelector(state => state.myGroup.name);
+    const groups = useSelector(state => state.groups.groups);
+    // Находим группу по имени
+    const group = groups.find(g => g.name === groupName);
+    const deadlines = group?.deadlines || []; // Используем опциональную цепочку
     const [searchTerm, setSearchTerm] = useState(''); // Состояние для хранения текста поиска
 
     // Функция для обработки изменения текста в input
@@ -31,22 +38,24 @@ function Main({ group, user }) {
                 description={deadline.description}
                 isCompleted={deadline.isCompleted}
                 group={group}
-                creatorId={group.creator.id}
+                creatorId={group?.creator?.id} // Используем опциональную цепочку
                 userId={user.id}
             />
         ));
     };
+
     function renderAddDeadline() {
-        if(group.creator.id === user.id) {
-            return(
+        if (group?.creator?.id === user.id) {
+            return (
                 <button className='fixed-button'>
                     <AddDeadline group={group} userId={user.id} />
                 </button>
-            )
-        }else{
-            return null
+            );
+        } else {
+            return null;
         }
     }
+
     return (
         <div>
             <div className="main-container">

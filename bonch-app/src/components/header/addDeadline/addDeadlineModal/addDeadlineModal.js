@@ -11,11 +11,11 @@ function AddDeadlineModal({ isOpen, onClose, group }) {
         deadlineInput?.classList.remove('error');
     }, [deadline, subject, description]);
     async function addDeadline() {
-        window.location.reload();
+        // window.location.reload();
         const datePattern = /^\d{4}-\d{2}-\d{2}$/
         if(datePattern.test(deadline) && description.length > 0 && subject.length > 0 && new Date(deadline) > new Date()){
             try {
-                await axios.post('https://deadlineminder.ru/server/routes/createDeadLine.php', {
+                const createDeadLine = await axios.post('http://localhost/src/server/routes/createDeadLine.php', {
                 group_id: group.creator.group_id,
                 subject: subject,
                 description: description,
@@ -31,10 +31,12 @@ function AddDeadlineModal({ isOpen, onClose, group }) {
                 //     alert('Ошибка при отправик сообщения');
                 //     return;
                 // }
+                console.log(createDeadLine.data);
+                window.location.reload();
                 } catch (error) {
                     console.error('Ошибка с POST addDeadline:', error.response ? error.response.data : error.message);
                     alert('Ошибка при добавлении дедлайна');
-                    return;
+                return;
                 }   
         }
         if(description === ''){
@@ -75,12 +77,13 @@ function AddDeadlineModal({ isOpen, onClose, group }) {
                         onChange={e => setDescription(e.target.value)} 
                     />
                     <input className='lastInput'
+                        type='date'
                         id="deadline"
                         placeholder='Data' 
                         value={deadline} 
                         onChange={e => setDeadline(e.target.value)} 
                     />
-                    <div className='data'>формат: гггг-дд-нн</div>
+                    <div className='data'>Укажите дату</div>
                     <button type="button" onClick={addDeadline}>Добавить</button>
                 </form>
                 <button className="close-button" onClick={onClose}>Закрыть</button>

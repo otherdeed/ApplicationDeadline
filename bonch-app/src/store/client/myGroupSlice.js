@@ -6,9 +6,9 @@ const myGroupSlice = createSlice({
     initialState: {
         name: null,
         description: null,
+        deadline:[],
         creator:{},
         members: [],
-        deadline:[]
     },
     reducers: {
         setMyGroup : (state, action) => {

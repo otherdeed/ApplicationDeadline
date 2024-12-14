@@ -45,7 +45,7 @@ if ($userId) {
                 'group_id' => $groupId,
             ],
             'members' => $members,
-            'deadline' => $deadlines,
+            'deadlines' => $deadlines,
         ];
     }
     echo json_encode($result);

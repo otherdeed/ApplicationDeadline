@@ -3,7 +3,7 @@ import axios from 'axios';
 // Создаем асинхронное действие для загрузки групп
 export const fetchGroups = createAsyncThunk('groups/fetchGroups', async (userId) => {
     try {
-        const response = await axios.post('https://deadlineminder.ru/server/routes/getGroup.php', {
+        const response = await axios.post('/server/routes/getGroup.php', {
             id: userId // Передаем идентификатор пользователя
         });
         return response.data; // Предполагаем, что сервер возвращает массив групп
