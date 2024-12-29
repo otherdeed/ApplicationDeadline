@@ -12,9 +12,7 @@ function AddDeadline({group}){
     }
     return(
         <div  onClick={openDeadline}>
-            <div class="icon">
-                <div class="plus"></div>
-            </div>  
+            Добавить дедлайн 
             <AddDeadlineModal isOpen={isModalOpen} onClose={closeDeadline} group={group}/>
         </div>
     )

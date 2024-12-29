@@ -18,12 +18,14 @@ function DeleteDeadline({onClose, isOpen, id, group}){
     if (!isOpen) return null; 
     return (
         <div className="modal-overlayClose" onClick={onClose}>
-            <div className='modal-overlayCloseText'>
-                Вы действительно хотите удалить этот дедлайн?
-            </div>
             <div className="modal-contentClose" onClick={(e) => e.stopPropagation()}>
-                <button onClick={deleteDeadline}>Удалить</button>
-                <button className="btnCloseModal"onClick={onClose}>Не удалять</button>
+            <div className='modal-overlayCloseText'>
+                    Точно удалить?
+                </div>
+                <div className='btnContainer'>
+                    <button className="deleteDeadline" onClick={deleteDeadline}>ДА</button>
+                    <button className="btnCloseModal"onClick={onClose}>НЕТ</button>
+                </div>
             </div>
         </div>
     );

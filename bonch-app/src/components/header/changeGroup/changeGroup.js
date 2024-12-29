@@ -10,12 +10,22 @@ function ChangeGroup({isOpen, onClose, myGroups}){
                 const index = Object.values(myGroups).findIndex(group => group.name === name);
                 localStorage.setItem('group',index)
                 dispatch(setMyGroup(selectedGroup)); // Сохраняем выбранную группу в Redux
+                onClose()
             }     
         };        
     if (!isOpen) return null; 
     return (
         <div className="modal-overlayGroup" onClick={onClose}>
             <div className="modal-contentGroup" onClick={(e) => e.stopPropagation()}>
+                <div className='modalName'>   
+                    Группы
+                    <div onClick={onClose} class="vertical-burger" id="burgerMenu">
+                        <div class="burger-strip"></div>
+                        <div class="burger-strip"></div>
+                        <div class="burger-strip"></div>
+                        <div class="burger-strip"></div>
+                    </div>
+                </div>
                   {Object.values(myGroups).map(group => (
                        <div className='groupBlock'>
                             <button key={group.name} onClick={() => changeGroup(group.name)}>
@@ -23,7 +33,6 @@ function ChangeGroup({isOpen, onClose, myGroups}){
                             </button>
                        </div>
                     ))}
-                <button className='btnClose' onClick={onClose}>Закрыть</button>
             </div>
         </div>
     );

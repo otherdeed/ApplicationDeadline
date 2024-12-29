@@ -8,55 +8,87 @@
     font-size: 18px;
     margin-bottom: 3%;
 }
-.modal-content {
-    border-radius: 10px; /* Закругленные углы */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Тень для глубины */
-    padding: 20px; /* Отступы внутри модального окна */
-    max-width: 400px; /* Максимальная ширина */
-    margin: auto; /* Центрирование */
+.modal-overlayDealine{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
-
+.modal-contentDealine{
+    position: relative;
+    border-radius: 5px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 400px;
+    margin: auto;
+    width: 70%;
+    background-color: #545454;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
 .addDeadline {
     display: flex; /* Используем flexbox для выравнивания */
     flex-direction: column; /* Вертикальное расположение элементов */
-    gap: 6px;   
+    gap: 30px;   
+    margin-top: 16%;
 }
+
 .error{
     color: red;
 }
 .addDeadline input::placeholder{
+    color: black;
 }
 .data{
     font-size: 11px;
 }
 .addDeadline input {
-    width: 100%;
-    color: white;
-    background-color: #D9D9D9;
+    color: black;
+    background-color: #EFA31A;
+    font-size: 0.7em;
     height: 50px;
     text-align: center;
-    border-radius: 40px;
-    padding: 10px; /* Отступы внутри полей */
-    border: none; /* Цвет рамки */
-    font-family: 'AKONY', sans-serif;
+    border-radius: 5px;
+    padding: 10px;
+    border: none;
+    width: 80%;
+}
+.inputBlock{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.dateInput{
+    width: 100%;
+}
+#deadline{
+    width: 100%;
+    margin-left: 13%;
 }
 .lastInput{
     border-bottom: 1px;
 }
 .addDeadline button {
-    background-color: #05FF0E;
-    color: white;
+    background-color: #EFA31A;
+    color: black;
+    font-weight: 700;
     border: none;
     border-radius: 5px;
     padding: 10px;
     font-size: 16px;
     cursor: pointer;
     height: 60px;
-    border-radius: 20px;
-    font-family: 'AKONY', sans-serif;
-}
-.addDeadline input::placeholder{
-    font-family: 'AKONY', sans-serif;
+    border-radius: 5px;
+    width: 86%;
+    margin-left: 13%;
+    font-size: 0.7em;
 }
 button.close-button {
     margin-top: 20px;

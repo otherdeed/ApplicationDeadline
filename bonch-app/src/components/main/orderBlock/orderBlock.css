@@ -1,41 +1,32 @@
 .order-block {
     position: relative;
-    height: 90px;
-    background-color: var(--blockColor, #d9d9d9);
-    border-radius: 10px;
+    height: 100px;
+    background-color: var(--blockColor, #545454);
+    border-radius: 5px;
     padding: 16px;
-    margin: 10px 0;
+    margin-top: 2%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    width: 85%;
-    color: white;
+    width: 80%;
+    font-size: 22px;
+    color:  #EFA31A;
 }
-.order-block button{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-    width: 30px;
-    height: 30px;
-    border: none;
-    background-color:#FF0000;
-    color: white;
-    border-radius: 30px;
+.order-block svg{
+  margin-right: 2%;
 }
-.deleteButton {
-    position: absolute; /* Позволяет позиционировать кнопку в верхнем правом углу */
-    top: 10px; /* Отступ сверху */
-    right: 10px; /* Отступ справа */
-    background: none; /* Убираем фон */
-    border: none; /* Убираем рамку */
-    cursor: pointer; /* Указываем, что это кнопка */
-    color: red; /* Цвет кнопки */
-    font-size: 18px; /* Размер шрифта для кнопки */
+.order-preview{
+    font-weight: 700;
+    margin-left: 1;
+    height: 33px;
 }
+.order-price{
+    font-style: italic;
+    font-weight: 400;
+    height: 33px;
 
-.order-preview, .order-price, .time-left {
-    margin: 5px 0; /* Отступы между строками */
+}
+.time-left{
+    font-weight: 700;
+    height: 33px;
 }

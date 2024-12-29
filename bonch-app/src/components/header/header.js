@@ -17,23 +17,32 @@ function Header({ group, user, myGroups, changeGroup }) {
             <div className="header-container">
                 <div className='changeGroup' onClick={openModalGroup}>
                     <ChangeGroup  myGroups={myGroups} group={group} isOpen={isModalOpen} onClose={closeModalGroup} changeGroup={changeGroup}/>
-                    |||
+                    <div class="burger" id="burger">
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                    </div>
                 </div>
                 <div className='groupName'>
-                    <div>ГРУППА: {group.name}</div>
+                    <div>{group.name}</div>
                 </div>
             </div>
         );
-    } else if (group.creator?.id !== user.id && group.creator.id !== undefined) {
+    } else if (group.creator?.id !== user.id && group.creator?.id !== undefined) {
         return (
             <div className="header-container">
                 <div className='changeGroup' onClick={openModalGroup}>
                     <ChangeGroup myGroups={myGroups} group={group} isOpen={isModalOpen} onClose={closeModalGroup}/>
-
-                    |||
+                    <div class="burger" id="burger">
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                    </div>
                 </div>
                 <div className='groupName'>
-                    <div>ГРУППА: {group.name}</div>
+                    <div>{group.name}</div>
                 </div>
             </div>
         );
@@ -42,8 +51,12 @@ function Header({ group, user, myGroups, changeGroup }) {
             <div className="header-container">
                 <div className='changeGroup' onClick={openModalGroup}>
                     <ChangeGroup myGroups={myGroups} group={group} isOpen={isModalOpen} onClose={closeModalGroup}/>
-
-                    |||
+                    <div class="burger" id="burger">
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                        <div class="line"></div>
+                    </div>
                 </div>
                 <div className='groupName'>
                     <div>У вас нет групп</div>

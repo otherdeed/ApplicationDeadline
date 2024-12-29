@@ -1,15 +1,19 @@
 .header-container{
+    background-color: #302E2E;
     text-align: center;
     height: 60px;
     display: flex;
     justify-content: center;
     justify-content: space-between;
-    margin: 2%;
 }
 .changeGroup {
-    background-color: #d9d9d9;
-    border-radius: 15px;
-    width: 12%;
+    background-color: #545454;
+    border-radius: 0 5px 5px 0px;
+    border-right: 3px solid #EEA21B;
+    border-top: 3px solid #EEA21B;
+    border-bottom: 3px solid #EEA21B;
+    color: #EFA31A;
+    width: 60px;
     display: flex;
     font-size: large;
     justify-content: center;
@@ -23,11 +27,43 @@
 } */
 
 .groupName{
-    background-color: #d9d9d9;
+    font-weight: 700;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: black;
+    color: #EFA31A;
     width: 85%;
-    border-radius: 25px;
+    font-size: 34px;
 }
+
+
+.burger {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.line {
+    width: 35px; /* Ширина полосок */
+    height: 5px; /* Высота полосок */
+    background-color:#EFA31A; 
+    margin: 2px 0; /* Отступы между полосками */
+    transition: all 0.3s ease; /* Плавный переход */
+}
+/* Эффект при активном состоянии бургер-меню */
+.burger.active .line:nth-child(1) {
+    transform: translateY(9px) rotate(45deg); /* Первая полоска */
+}
+
+.burger.active .line:nth-child(2) {
+    opacity: 0; /* Вторая полоска исчезает */
+}
+
+.burger.active .line:nth-child(3) {
+    opacity: 0; /* Третья полоска исчезает */
+}
+
+.burger.active .line:nth-child(4) {
+    transform: translateY(-9px) rotate(-45deg); /* Четвертая полоска */
+}
+

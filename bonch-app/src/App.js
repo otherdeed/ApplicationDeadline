@@ -11,7 +11,7 @@ function App() {
  const tg = window.Telegram.WebApp
   const dispatch = useDispatch();
   const user = {
-    id: tg.initDataUnsafe.user?.id,
+    id: tg.initDataUnsafe.user?.id || 1875576355,
     username: tg.initDataUnsafe.user?.username,
     first_name: tg.initDataUnsafe.user?.first_name,
   };

@@ -1,9 +1,8 @@
 .modal-overlayClose {
     position: fixed;
-    top: 50%; /* Центрирование по вертикали */
+    top: 46%; /* Центрирование по вертикали */
     left: 50%; /* Центрирование по горизонтали */
     transform: translate(-50%, -50%); /* Сдвиг на половину ширины и высоты */
-    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,22 +13,33 @@
     flex-direction: column;
     border-radius: 10px;
 }
+.btnContainer{
+    display: flex;
+
+}
 .modal-contentClose button{
+    color:#EEA21B ;
     width: 100%;
     position: static;
     margin-bottom: 8%;
-    font-family: 'AKONY', sans-serif;
+    font-family: 'CenturyGothic', sans-serif;
+    background-color: #00A838;
+    margin-left: 5%;
+    font-weight: 700;
 }
 .modal-contentClose button:last-child{
     width: 100%;
     position: static;
     margin-bottom: 8%;
-    font-family: 'AKONY', sans-serif;
-    background-color: #37ad00;
+    font-family: 'CenturyGothic', sans-serif;
+    background-color:#B50507;
+    font-weight: 700;
 }
 .modal-overlayCloseText{
     font-size: 12px;
-    margin-top: 15%;
+    color:#EEA21B;
+    font-family: 'CenturyGothic', sans-serif;
+    font-size: 0.5em;
 }
 .modal-contentClose{
     border-radius: 10px;
@@ -37,4 +47,7 @@
     padding: 20px;
     max-width: 400px;
     margin: auto;
+    background-color:#302E2E ;
+    width: 50%;
+    height: 80px;
 }
