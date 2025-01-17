@@ -1,0 +1,103 @@
+.modal-overlayGroup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    z-index: 1000;
+}
+.group{
+    margin-left: 2%;
+}
+.modalName{
+    position: relative;
+    display:flex;
+    justify-content: space-between;
+    font-size: 1.5em;
+    align-items: center;
+    background-color: #545454;
+    width: 117%;
+    font-weight: 700;
+    border-radius: 5px;
+    border-right:3px solid #EEA21B ;
+    border-bottom:3px solid #EEA21B ;
+    border-top:3px solid #EEA21B ;
+    height: 50px;;
+}
+.modal-contentGroup {
+    height: 100%;
+    border-radius: 5px;
+    width: 75%;
+    background-color:#3C3C3C;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex; /* Используем flexbox */
+    flex-direction: column; /* Вертикальное расположение элементов */
+}   
+.modal-contentGroup form {
+    flex-grow: 1; /* Занимаем оставшееся пространство */
+}
+.groupBlock button{
+    margin-top: 20px;
+    height: 60px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border: none;
+    width: 90%;
+    text-decoration: none;
+    border: 3px solid #EFA31A;
+    background-color: #545454;
+    color: #EFA31A;
+    font-weight: 700;
+    font-size: 1.5em;
+}
+.burgerChangeGroup{
+    margin-right: 2%;
+}
+.btnClose {
+    margin-top: 20px;
+    height: 60px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    border: none;
+    position: absolute;
+    top: 84%;
+    width: 55%;
+    border: 2px solid  black;
+}
+/* Добавьте это в ваш файл changeGroup.css */
+
+/* Добавьте это в ваш файл changeGroup.css */
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+.modal-contentGroup {
+    /* Другие стили */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.modal-contentGroup.slide-in {
+    animation: slideIn 0.5s forwards; /* Используем анимацию появления */
+}
+
+.modal-contentGroup.slide-out {
+    animation: slideOut 0.5s forwards; /* Используем анимацию исчезновения */
+}
+

@@ -1,0 +1,21 @@
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+.no-scroll {
+    overflow: hidden;
+}
+.Icon{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s;
+}
+.CloseBtn{
+    position: absolute;
+    left: 88%;
+    top: 0%;
+}

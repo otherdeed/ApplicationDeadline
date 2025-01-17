@@ -1,0 +1,174 @@
+.main-container{
+    flex: 1;
+    overflow-y: auto;
+}
+.order-block:last-child{
+    margin-bottom: 30%;
+}
+.search-container {
+    width: 68%;
+    left: -10%;
+    margin: 0 auto;
+    position: relative;
+}
+.search-container input{
+    border-style: none;
+    font-size: 25px;
+}
+.search-input {
+    width:70%;
+    margin-top: 3%;
+    height: 30px;
+    color: #EFA31A;
+    background-color: #545454;
+    padding: 10px 40px 10px 40px;
+    border-radius: 5px;
+    font-size: 16px;
+    border: none;
+    text-align: center;
+    font-weight: 700;
+}
+
+.search-input::placeholder {
+    color: #EFA31A; /* Цвет текста подсказки */
+}
+.search-icon {
+    position: absolute;
+    left: 10px; /* Отступ от левого края */
+    top: 50%; /* Центрируем по вертикали */
+    transform: translateY(-50%); /* Центрируем по вертикали */
+    width: 20px; /* Ширина иконки */
+    height: 20px; /* Высота иконки */
+    fill: #333; /* Цвет иконки */
+}
+.noDeadline{
+    color: #EFA31A;
+    position: absolute;
+    top: 50%;
+    font-weight: 700;
+    font-size: 2em;
+}
+.order-container{
+    margin-top: 2%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.fixed-button{
+    border: none;
+    position: fixed; /* Фиксированное позиционирование */
+    bottom: 20px; /* Отступ от нижней части окна */
+    width: 80%;
+    height: 60px;
+    right: 10%;
+    background-color: #EFA31A; /* Цвет фона кнопки */
+    color: black; /* Цвет текста */
+    border: none; /* Убираем рамку */
+    border-radius: 5px; /* Закругленные углы */
+    padding: 10px 20px; /* Отступы внутри кнопки */
+    font-size: 1.5em; /* Размер шрифта */
+    display: flex;
+    font-weight: 700;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer; /* Указываем, что это кнопка */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Тень для глубины */
+    transition: background-color 0.3s; /* Плавный переход цвета фона */
+    border: none;
+    font-family: 'CenturyGothic', sans-serif;
+}
+.FolderBlock {
+    display: flex;
+    flex-direction: row;
+    width: 93%;
+    border-radius: 5px;
+    background-color: #545454;
+    padding: 10px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    align-items: center; /* Центрируем элементы по вертикали */
+    overflow-x: auto;
+    font-family: 'CenturyGothic', sans-serif;
+}
+
+.btnFolder{
+    height: 40px;
+    background-color:#3c3c3c;
+    border: 2px solid #EFA31A;
+    color: #EFA31A;
+    margin: 0 5px; /* Отступы между кнопками */
+    cursor: pointer; /* Указатель при наведении */
+    border-radius: 5px; /* Скругленные углы */
+    transition: background-color 0.3s; /* Плавный переход цвета */
+    font-family: 'CenturyGothic', sans-serif;
+}
+.activeFolder{
+    height: 40px;
+    background-color:#636363;
+    border: 2px solid #EFA31A;
+    color: #EFA31A;
+    margin: 0 5px; /* Отступы между кнопками */
+    cursor: pointer; /* Указатель при наведении */
+    border-radius: 5px; /* Скругленные углы */
+    transition: background-color 0.3s; /* Плавный переход цвета */
+    font-family: 'CenturyGothic', sans-serif;
+}
+.noFolder{
+    text-align: center;
+    color: #EFA31A;
+    font-weight: 700;
+}
+.addFolder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto; /* Сдвигаем иконку вправо */
+    cursor: pointer; /* Указатель при наведении */
+}
+
+.addFolder .icon {
+    width: 40px;
+    height: 40px;
+    background-color: #EFA31A; /* Цвет иконки */
+    border-radius: 50%; /* Круглая форма */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s; /* Плавный переход цвета */
+}
+
+.addFolder .plus {
+    width: 10px;
+    height: 2px;
+    background-color: #ffffff; /* Цвет плюса */
+    position: relative;
+}
+
+.addFolder .plus:before,
+.addFolder .plus:after {
+    width: 10px;
+    height: 2px;
+    background-color: #ffffff; /* Цвет плюса */
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.addFolder .plus:before {
+    transform: rotate(90deg); /* Вертикальная линия плюса */
+}
+.filterBtn{
+    width: 200px;
+    border: none;
+    background-color: #545454;
+    color: #efa31a;
+    border-radius: 5px;
+    height: 25px;
+    font-weight: 700;
+}
+.filterBlock{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2%;
+}

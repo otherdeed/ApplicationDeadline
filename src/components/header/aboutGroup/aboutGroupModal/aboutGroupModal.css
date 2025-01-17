@@ -1,0 +1,86 @@
+.modal-overlaAbout{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-contentAbout{
+    height: 100%;
+    border-radius: 5px;
+    width: 75%;
+    background-color: #3C3C3C;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes slideOutAbout{
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(+100%);
+    }
+}
+@keyframes slideInAbout {
+    0% {
+        transform: translateX(+100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+.modal-contentAbout {
+    /* Другие стили */
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.modal-contentAbout.slide-in {
+    animation: slideInAbout 0.5s forwards; /* Используем анимацию появления */
+}
+
+.modal-contentAbout.slide-out {
+    animation: slideOutAbout 0.5s forwards; /* Используем анимацию исчезновения */
+}
+.modal-text{
+    font-size: 18px;
+    margin-bottom: 3%;
+    background-color: #545454;
+    color: #efa31a;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 5px 0px 0px 5px;
+}
+.close-button{
+    margin-top: 20px;
+    height: 50px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border: none;
+    width: 100%;
+    text-decoration: none;
+    background-color: #EFA31A;
+    position: absolute;
+    top: 90%;
+    font-weight: 700;
+}
+.contentAbout{
+    color: #EFA31A;
+    display: flex;
+    gap: 11px;
+    flex-direction: column;
+}
+.about-info{
+    margin-left: 20px;
+    margin-right: 20px;
+    padding: 20px;
+    text-align: center;
+    background-color: #545454;
+}

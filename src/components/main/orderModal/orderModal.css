@@ -1,0 +1,54 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7); /* Полупрозрачный фон */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Убедитесь, что модальное окно поверх других элементов */
+}
+
+.modal-content {
+    font-family: 'CenturyGothic', sans-serif;
+    font-weight: 700;
+    position: relative;
+    background-color: #3C3C3C;
+    padding: 20px;
+    border-radius: 5px;
+    width: 70%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    align-items:stretch;
+}
+
+.btnCloseModal{
+    margin-top: 20px;
+    height: 60px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    border: none;
+    position: absolute;
+    top: 77%;
+    width: 70%;
+    border: 2px solid black;
+}
+
+.deleteButton{
+    margin-top: 5%;
+    width: 100%;
+}
+.orderModal-text{
+    color: #EEA21B;
+}
+.btnDel{
+    height: 40px;
+    background-color: #302E2E;
+    color: #EE221B;
+    font-weight: 700;
+    width: 100%;
+    border-radius: 5px;
+    border: none;
+    font-size: 1em;
+}

@@ -1,0 +1,121 @@
+.FilterContainer {
+    height: 280px;
+    background-color: #302e2e;
+    width: 80%;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    animation: ScrollIn 1s ease-out forwards;
+    flex-direction: column;
+    align-items: stretch;
+    position: relative; /* Устанавливаем контейнер как относительный */
+    z-index: 1; /* Устанавливаем z-index для контейнера */
+}
+
+@keyframes ScrollIn {
+    0% {
+        transform: translateY(0); /* Начальная позиция */
+        height: 0px; /* Начальная высота */
+    }
+    100% {
+        transform: translateY(0); /* Конечная позиция */
+        height: 280px; /* Конечная высота */
+    }
+}
+
+@keyframes ScrollOut {
+    0% {
+        transform: translateY(0); /* Конечная позиция */
+        height: 280px; /* Начальная высота */
+    }
+    100% {
+        transform: translateY(0); /* Уход вверх */
+        height: 0px; /* Конечная высота */
+    }
+}
+
+.scrollOut {
+    animation: ScrollOut 1s ease-out forwards; /* Применение анимации */
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-body {
+    margin-top: 20px; /* Отступ сверху для тела фильтров */
+}
+
+.filter-group {
+    gap: 5px;
+    padding-top: 5px;
+    margin-bottom: 15px;
+    border: 2px solid #efa31a;
+    border-radius: 5px;
+    color: #efa31a;
+    background-color: #545454;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 700;
+}
+.radio-group {
+    display: flex;
+    justify-content: center;
+}
+
+.custom-radio {
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #efa31a;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    transition: border-color 0.2s;
+    width: 110px;
+    justify-content: center;
+}
+
+.custom-radio input {
+    opacity: 0; /* Скрываем стандартную радиокнопку */
+    position: absolute; /* Позиционируем его */
+    cursor: pointer; /* Курсор при наведении */
+}
+
+.custom-radio input:checked ~ .checkmark {
+    display: none; /* Скрываем псевдоэлемент checkmark */
+}
+
+.custom-radio:hover {
+    border-color:  #efa31a; /* Цвет рамки при наведении */
+}
+
+.custom-radio input:checked ~ .checkmark {
+    display: none; /* Убираем checkmark при выборе */
+}
+
+.custom-radio input:checked {
+    outline: none; /* Убираем контур при выборе */
+}
+
+.filterSettingBtn{
+    width: 100%;
+    display: flex;
+    gap: 5px;
+}
+.filterSettingBtn button{
+    width: 90%;
+    border-radius: 5px;
+    border: none;
+    font-size: 20px;
+    font-weight: 500;
+    background-color: #efa31a ;
+    height: 30px;
+}

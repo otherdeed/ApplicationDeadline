@@ -1,0 +1,244 @@
+.addDeadline{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.modal-text{
+    font-size: 18px;
+    margin-bottom: 3%;
+    height: 60px;
+}
+.closeBtn{
+    position: absolute;
+    left: 83%;
+    top: -2%;
+}
+.modal-overlayDealine{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out; /* Применение анимации */
+}
+.modal-contentDealine{
+    position: relative;
+    border-radius: 5px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 400px;
+    margin: auto;
+    width: 70%;
+    background-color: #545454;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'CenturyGothic', sans-serif;
+    animation: fadeIn 0.3s ease-out; /* Применение анимации */
+}
+.modal-contentDealine svg{
+    position: absolute;
+    left: 1%;
+}
+.addDeadline {
+    display: flex; /* Используем flexbox для выравнивания */
+    flex-direction: column; /* Вертикальное расположение элементов */
+    gap: 30px;   
+    margin-top: 15%;
+    width: 100%;
+}
+
+.error{
+    color: red;
+    font-size: 12px;
+    height: 30px;
+    width: 100%;
+    background-color: #302E2E;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.addDeadline input::placeholder{
+    color: black;
+}
+.data{
+    font-size: 11px;
+}
+.importance-container {
+    display: flex;
+    justify-content: space-evenly; /* Равномерное распределение */
+    padding: 10px; /* Внутренние отступы */
+    width: 100%;
+}
+
+.color-square {
+    position: relative;
+    display: inline-block;
+    width: 30px; /* Ширина квадрата */
+    height: 30px; /* Высота квадрата */
+    border: 2px solid transparent; /* Прозрачная рамка по умолчанию */
+    cursor: pointer; /* Указатель для кнопки */
+    border-radius: 5px;
+    transition: transform 0.2s, border-color 0.2s; /* Плавный эффект при наведении */
+}
+
+.color-square:hover {
+    transform: scale(1.1); /* Увеличение квадрата при наведении */
+}
+
+.color-square input {
+    display: none; /* Скрываем стандартные радиокнопки */
+}
+
+/* Выделение рамкой для выбранного радиокнопки */
+.color-square input:checked + .square-text {
+    border: 2px solid #000;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 10px;
+    z-index: 1;
+    background: black;
+    transition: 0.5s all;
+}
+.PriorityText{
+    color: black;
+    width: 100%;
+    height: 23px;
+    background-color: #EFA31A;
+    font-size: 0.7em;
+    margin-top: -12%;
+    border-radius: 5px;
+    font-family: 'CenturyGothic', sans-serif;
+}
+.square-text {
+    position: absolute;
+    top: 50%; /* Центрирование текста по вертикали */
+    left: 50%; /* Центрирование текста по горизонтали */
+    transform: translate(-50%, -50%); /* Центрирование текста */
+    color: white; /* Цвет текста */
+    font-weight: bold; /* Жирный текст */
+}
+
+.addDeadline input {
+    color: black;
+    background-color: #EFA31A;
+    font-size: 1em;
+    height: 50px;
+    text-align: center;
+    border-radius: 5px;
+    border: none;
+    width: 100%;
+    height: 50px;
+}
+.inputBlock{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.dateInput{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.DateText{
+    color: black;
+    width: 100%;
+    height: 23px;
+    background-color: #EFA31A;
+    font-size: 0.7em;
+    margin-top: 4%;
+    border-radius: 5px;
+}
+.lastInput{
+    border-bottom: 1px;
+}
+.addDeadline button {
+    background-color: #EFA31A;
+    color: black;
+    font-weight: 700;
+    border: none;
+    border-radius: 5px;
+    width: 100% ;
+    font-size: 1em;
+    cursor: pointer;
+    height: 50px;
+    border-radius: 5px; 
+}
+button.close-button {
+    margin-top: 20px;
+    height: 50px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border: none;
+    width: 100%;
+    /* border: 2px solid black; */
+    text-decoration: none;
+    background-color: #EFA31A;
+}
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(0); /* Начальная позиция выше */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); /* Конечная позиция */
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0); /* Конечная позиция */
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(0); /* Уход вверх */
+    }
+}
+.modal-overlay{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out; /* Применение анимации */
+}
+
+.modal-content{
+    position: relative;
+    border-radius: 5px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 400px;
+    margin: auto;
+    width: 70%;
+    background-color: #545454;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-family: 'CenturyGothic', sans-serif;
+    animation: fadeIn 0.3s ease-out; /* Применение анимации */
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease-out forwards; /* Применение анимации исчезновения */
+}
+.no-scroll {
+    overflow: hidden; /* Отключаем прокрутку */
+}

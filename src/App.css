@@ -1,0 +1,77 @@
+@font-face {
+    font-family: 'CenturyGothic'; /* Замените на имя вашего шрифта */
+    src: url('././font/centurygothic.ttf') format('truetype');
+    font-weight: normal; /* Укажите, если шрифт жирный или обычный */
+    font-style: normal; /* Укажите стиль шрифта (normal, italic и т.д.) */
+}
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Задаем высоту 100% для body */
+    /* background-color:var(--tg-theme-bg-color); */
+    background-color:#3c3c3c;
+    font-family: 'CenturyGothic', sans-serif;
+    transition: all;
+}
+.App{
+    display: flex;
+    flex-direction: column; /* Располагаем элементы по вертикали */
+    height: 100vh; /* Высота всего окна браузера */
+}
+.icon {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    position: relative;
+}
+.AppBrowse{
+    color: white;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    top: 50%;
+}
+.cross, .plus {
+    background-color: white;
+    position: absolute;
+    border-radius: 5px;
+}
+
+.cross {
+    width: 3px;
+    height: 30px;
+    transform: rotate(45deg);
+}
+
+.cross:before {
+    content: '';
+    width: 30px;
+    height: 3px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 5px;
+}
+.plus {
+    width: 6px;
+    height: 50px;
+}
+
+.plus:before {
+    content: '';
+    width: 50px;
+    height: 6px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border-radius: 5px;
+}
