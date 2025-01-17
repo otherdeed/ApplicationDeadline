@@ -85,6 +85,9 @@ function Main() {
         } else if (myFolders.length === 0 && !isOpenFilter) {
             return <div className='noDeadline'>Создайте папку</div>;
         }
+        if(folderId === null && isOpenFilter){
+            return null
+        }
         return filteredDeadlines.map(deadline => (
             <OrderBlock className= 'order-block'
                 key={deadline.id_deadline}
