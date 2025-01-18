@@ -57,21 +57,22 @@ app.post('/joinGroup', (req, res) => {
             return res.status(404).json({ error: 'Группа не найдена' });
         }
         const membersGroup = 'SELECT * FROM group_members WHERE id_group = ?'
-        pool.query(membersGroup, [id_group], (error, results) => {;
+        pool.query(membersGroup, [id_group], (error, results) => {
+            ;
             const members = []
             results.forEach(member => {
                 members.push(member.member);
             })
-            if(members.includes(tg_id)){
+            if (members.includes(tg_id)) {
                 return res.status(400).json({ error: 'Вы уже являетесь участником данной группы' });
-            }else{
+            } else {
                 const typeGroupQuery = 'SELECT type FROM groups WHERE id_group = ?'
                 pool.query(typeGroupQuery, [id_group], (error, results) => {
                     if (error) {
                         return res.status(500).json({ error: error.message });
                     }
                     const typeGroup = results[0].type
-                    if(typeGroup === 'public'){
+                    if (typeGroup === 'public') {
                         const memberQuery = 'INSERT INTO group_members (member, id_group) VALUES (?, ?)';
                         pool.query(memberQuery, [tg_id, id_group], (error, results) => {
                             if (error) {
@@ -86,7 +87,7 @@ app.post('/joinGroup', (req, res) => {
                             if (error) {
                                 console.error('Ошибка при выполнении запроса:', error);
                                 return res.status(500).json({ error: 'Ошибка при выполнении запроса к базе данных' });
-                            }                        
+                            }
                             console.log(results[0]);
                             const chatId = results[0].admin
                             const groupName = results[0].name
@@ -97,16 +98,16 @@ app.post('/joinGroup', (req, res) => {
                                     return res.status(500).json({ error: 'Ошибка при выполнении запроса к базе данных' });
                                 }
                                 const username = results[0].username
-                                try{
-                                    axios.post('http://localhost:3002/joinUserPriveGroup',{
+                                try {
+                                    axios.post('http://localhost:3002/joinUserPriveGroup', {
                                         chatId: chatId,
-                                        usernameMember:username,
+                                        usernameMember: username,
                                         groupName: groupName,
-                                        idMember:tg_id,
-                                        id_group:id_group
+                                        idMember: tg_id,
+                                        id_group: id_group
                                     })
                                     return res.status(400).json({ error: 'Заявка на присоедение к приватной группе отправлена, как только создатель группы ответит на заявку, мы вам пришлем сообщение.' });
-                                }catch(error){
+                                } catch (error) {
                                     console.log('Error joininUserPriveGroup ' + error);
                                 }
                             })
@@ -120,10 +121,10 @@ app.post('/joinGroup', (req, res) => {
 app.post('/actionJoinPrivateGroup', (req, res) => {
     const { action, tg_id, id_group } = req.body;
     console.log(id_group);
-    
+
     if (action === 'approve') {
         const groupQuery = 'SELECT * FROM groups WHERE id_group = ?';
-        
+
         // Проверяем наличие группы
         pool.query(groupQuery, [id_group], (error, results) => {
             if (error) {
@@ -136,7 +137,7 @@ app.post('/actionJoinPrivateGroup', (req, res) => {
 
             const groupName = results[0].name;
             const memberQuery = 'INSERT INTO group_members (member, id_group) VALUES (?, ?)';
-            
+
             pool.query(memberQuery, [tg_id, id_group], (error) => {
                 if (error) {
                     return res.status(500).json({ error: error.message });
@@ -169,7 +170,7 @@ app.post('/actionJoinPrivateGroup', (req, res) => {
 app.post('/createNewGroup', (req, res) => {
     const { name, type, admin } = req.body;
     const id_group = generateRandomId(5);
-    
+
     // Вставка новой группы
     const query = 'INSERT INTO groups (id_group, name, type, admin) VALUES (?, ?, ?, ?)';
     pool.query(query, [id_group, name, type, admin], (error, results) => {
@@ -333,10 +334,10 @@ app.post('/myGroups', (req, res) => {
 
 // Эндпоинт для создания новой папки
 app.post('/createNewFolder', (req, res) => {
-    const { id, folderName, members} = req.body;
+    const { id, folderName, members } = req.body;
     const id_folder = generateRandomId(5);
     const query = 'INSERT INTO folders (id_folder, name, id_group) VALUES (?, ?, ?)';
-    
+
     pool.query(query, [id_folder, folderName, id], (error, results) => {
         if (error) {
             return res.status(500).json({ error: error.message });
@@ -351,7 +352,7 @@ app.post('/createNewFolder', (req, res) => {
 
 // Эндпоинт для создания нового дедлайна
 app.post('/newDeadline', (req, res) => {
-    const { subject, description, deadline, priority, folderId, members } = req.body;
+    const { subject, description, deadline, priority, folderId, members, nameGroup } = req.body;
 
     console.log(req.body); // Логируем тело запроса
 
@@ -362,10 +363,10 @@ app.post('/newDeadline', (req, res) => {
 
     const id_deadline = generateRandomId(5);
     const query = 'INSERT INTO deadlines (id_deadline, name, due_date, description, priority, id_folder) VALUES (?, ?, ?, ?, ?, ?)';
-    
+
     console.log(query, [id_deadline, subject, deadline, description, priority, folderId]); // Логируем запрос
 
-    pool.query(query, [id_deadline, subject, deadline, description, priority, folderId], (error, results) => {
+    pool.query(query, [id_deadline, subject, deadline, description, priority, folderId], async (error, results) => {
         if (error) {
             console.error('SQL Error:', error); // Логируем ошибку SQL
             return res.status(500).json({ error: error.message });
@@ -376,6 +377,10 @@ app.post('/newDeadline', (req, res) => {
         });
         clients = [];
         res.sendStatus(200);
+        await axios.post('http://localhost:3002/createDeadline', {
+            members: members,
+            nameGroup: nameGroup
+        })
     });
 });
 app.post('/deleteFolder', (req, res) => {
@@ -478,24 +483,54 @@ app.post('/leaveGroup', async (req, res) => {
         }
     });
 });
-app.post('/deleteDeadline',(req, res) => {
-    const {deadlineId, members} = req.body
-    const deleteDeadline  = 'DELETE FROM deadlines WHERE id_deadline = ?'
-    pool.query(deleteDeadline, [deadlineId], (error, result) =>{
-        if(error){
+app.post('/deleteDeadline', (req, res) => {
+    const { deadlineId, members } = req.body
+    const deleteDeadline = 'DELETE FROM deadlines WHERE id_deadline = ?'
+    pool.query(deleteDeadline, [deadlineId], (error, result) => {
+        if (error) {
             console.error('Error executing query:', error)
-            return res.status(500).json({error: 'An error occurred while deleting the deadline.'})
+            return res.status(500).json({ error: 'An error occurred while deleting the deadline.' })
         }
         clients.forEach(client => {
             client.json(members); // Отправляем сообщение всем клиентам
         });
         clients = []; // Очищаем список клиентов
-        res.status(200).json({message:'Дедлайн Удален'})
+        res.status(200).json({ message: 'Дедлайн Удален' })
     })
 })
 app.post('/deleteGroup', (req, res) => {
     const { id_group } = req.body; // Получаем ID группы из тела запроса
-
+    const query = "SELECT * FROM groups WHERE id_group = ?"
+    pool.query(query, [id_group], (error, result) => {
+        if (error) {
+            console.error('Error executing query:', error);
+            return res.status(500).json({ error: 'An error occurred while fetching the group.' });
+        }
+        const groupName = result[0].name
+        const query = 'SELECT * FROM group_members WHERE id_group = ?'
+        pool.query(query, [id_group], async (error, result) => {
+            if (error) {
+                console.error('Error executing query:', error);
+                return;
+            }
+            if (result.length === 0) {
+                return null
+            }
+            const members = []
+            result.forEach(row => {
+                members.push(row.member)
+            })
+            try {
+                await axios.post('http://localhost:3002/groupDelete', {
+                    members: members,
+                    groupName: groupName,
+                })
+            } catch (error) {
+                console.error('Error trackDeadline:', error);
+                return;
+            }
+        })
+    })
     // SQL-запрос для удаления группы
     const deleteGroupQuery = 'DELETE FROM groups WHERE id_group = ?'; // Предполагается, что таблица называется 'groups' и поле 'id' является первичным ключом
 
@@ -514,7 +549,72 @@ app.post('/deleteGroup', (req, res) => {
         res.status(200).json({ message: 'Ваша группа удалена' });
     });
 });
+function trackDeadlines() {
+    setInterval(async () => {
+        const query = 'SELECT * FROM deadlines WHERE due_date BETWEEN ? AND ?';
 
+        // Получаем текущую дату
+        const startDate = new Date();
+        // Создаем новую дату, добавляя 1 день (в миллисекундах)
+        const endDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000);
+
+        pool.query(query, [startDate, endDate], (error, results) => {
+            if (error) {
+                console.error('Error executing query:', error);
+                return;
+            }
+            if (results.length === 0) {
+                return null
+            }
+            results.forEach(deadline => {
+                console.log(deadline);
+                const nameDeadline = deadline.name
+                const diffrentDate = deadline.due_date - new Date()
+                console.log(diffrentDate);
+                console.log(`Дедлайн ${nameDeadline} заканчивается через ${Math.floor(diffrentDate / (1000 * 60 * 60))} часа.`);
+
+                const query = 'SELECT * FROM folders WHERE id_folder = ?'
+                pool.query(query, [deadline.id_folder], (error, result) => {
+                    if (error) {
+                        console.error('Error executing query:', error);
+                        return;
+                    }
+                    if (result.length === 0) {
+                        return null
+                    }
+                    const nameFolder = result[0].name
+                    const id_group = result[0].id_group
+                    console.log(`Из папки ${nameFolder}`);
+                    const query = 'SELECT * FROM group_members WHERE id_group = ?'
+                    pool.query(query, [id_group], async (error, result) => {
+                        if (error) {
+                            console.error('Error executing query:', error);
+                            return;
+                        }
+                        if (result.length === 0) {
+                            return null
+                        }
+                        const members = []
+                        result.forEach(row => {
+                            members.push(row.member)
+                        })
+                        try {
+                            await axios.post('http://localhost:3002/trackDeadline', {
+                                members: members,
+                                nameDeadline: nameDeadline,
+                            })
+                        } catch (error) {
+                            console.error('Error trackDeadline:', error);
+                            return;
+                        }
+                    })
+                })
+            })
+        });
+    }, 43200000)
+}
+
+trackDeadlines()
 app.listen(PORT, () => {
     console.log(`Сервер запущен на http://localhost:${PORT}`);
 });

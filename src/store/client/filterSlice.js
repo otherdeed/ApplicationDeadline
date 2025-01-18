@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const filterSlice = createSlice({
     name: "filter",
     initialState: {
-        searchTerm: '',
+        searchTerm: '' ,
         searchTime: 1,
         searchPriority: null,
         isOpenFilter: true

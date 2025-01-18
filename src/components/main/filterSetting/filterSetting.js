@@ -1,11 +1,12 @@
 import './filterSetting.css';
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { useDispatch, useSelector} from 'react-redux';
 import {setTime, setPriority,setIsopenFilter } from '../../../store/client/filterSlice';
 function FilterSetting({ isOpen, onClose }) {
   const [isExiting, setIsExiting] = useState(false);
   const dispatch = useDispatch()
-  const Priority = useSelector(state => state.filter.searchPriority)
+  const Priority = useSelector(state => state.filter.searchPriority);
+  
   const resetFilter = () => {
     dispatch(setTime(1))
     dispatch(setPriority(null)) 
@@ -22,7 +23,7 @@ function FilterSetting({ isOpen, onClose }) {
 
   return (
     <div className={`FilterContainer ${isExiting ? 'scrollOut' : ''}`}>
-      <div className="filter-body">
+      <div className={`filter-body ${isExiting ? 'fadeOut' : ''}`}>
         <div className="filter-group">
           По времени
           <div>
@@ -77,7 +78,7 @@ function FilterSetting({ isOpen, onClose }) {
           </div>
         </div>
       </div>
-      <div className='filterSettingBtn'>
+      <div className={`filterSettingBtn ${isExiting ? 'fadeOut' : ''}`}>
         <button onClick={resetFilter}>Сбросить</button>
         <button onClick={handleClose}>Скрыть</button>
       </div>

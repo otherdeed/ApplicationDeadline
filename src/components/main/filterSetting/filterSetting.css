@@ -10,7 +10,6 @@
     flex-direction: column;
     align-items: stretch;
     position: relative; /* Устанавливаем контейнер как относительный */
-    z-index: 1; /* Устанавливаем z-index для контейнера */
 }
 
 @keyframes ScrollIn {
@@ -35,6 +34,23 @@
     }
 }
 
+@keyframes FadeOut{
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes FadeIn{
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
 .scrollOut {
     animation: ScrollOut 1s ease-out forwards; /* Применение анимации */
 }
@@ -47,6 +63,10 @@
 
 .filter-body {
     margin-top: 20px; /* Отступ сверху для тела фильтров */
+    animation: FadeOut 0.5s ease-out forwards;
+}
+.fadeOut{
+    animation: FadeIn 0.5s ease-out forwards;
 }
 
 .filter-group {
@@ -118,4 +138,5 @@
     font-weight: 500;
     background-color: #efa31a ;
     height: 30px;
+    animation: FadeOut 0.2s ease-out forwards;
 }

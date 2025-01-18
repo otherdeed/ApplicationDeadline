@@ -11,7 +11,7 @@ function AddDeadlineModal({ isOpen, onClose, folder }) {
   const [error, setError] = useState("");
   const [isExiting, setIsExiting] = useState(false);
   const members = useSelector((state) => state.myGroup.members);
-
+  const nameGroup = useSelector(state => state.myGroup.name)
   // Сброс состояния формы при закрытии модального окна
   useEffect(() => {
     if (!isOpen) {
@@ -51,6 +51,7 @@ function AddDeadlineModal({ isOpen, onClose, folder }) {
           priority,
           folderId: folder,
           members: members,
+          nameGroup: nameGroup
         }
       );
       if (newDeadline.status === 200) {
