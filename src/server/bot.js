@@ -223,6 +223,12 @@ bot.on('callback_query', async (call) => {
 
             const { chatId, message } = response.data;
             await bot.sendMessage(chatId, message);
+            await bot.editMessageText('Пользователь увидит ваш ответ.',{
+                chat_id: call.message.chat.id,
+                message_id: call.message.message_id,
+            });
+            console.log(call);
+            
         } catch (error) {
             console.error('Error in actionJoinPrivateGroup:', error.message);
             await bot.sendMessage(call.from.id, 'Произошла ошибка при обработке вашего запроса.');
@@ -291,16 +297,26 @@ app.post('/createDeadline', (req, res) => {
 })
 
 app.post('/trackDeadline', (req, res) => {
-    const {members, nameDeadline} = req.body;
-    members.forEach(async (member) => {
-        await bot.sendMessage(member, `Срок  Дедлайна "${nameDeadline}" заканчивается`)
+    const {data} = req.body
+    const sortData = new Set()
+    data.forEach(d => {
+        sortData.add(d)
     })
+    console.log(Array.from(sortData));
+    Array.from(sortData).forEach(async d =>{
+        await bot.sendMessage(d.member, `В группе "${d.group}" завтра заканчивается дедлайн`)
+    })
+
 })
 app.post('/groupDelete', (req, res) => {
     const {members, groupName} = req.body;
     members.forEach(async (member) => {
         await bot.sendMessage(member, `Группа "${groupName}" была удалена`)
     })
+})
+app.post('/userDeleteGroup', async (req, res) => {
+    const {tg_id, groupName} = req.body;
+    await bot.sendMessage(tg_id, `Вы были удалены с группы "${groupName}"`)
 })
 app.listen(PORT, () => {
     console.log(`Сервер запущен на http://localhost:${PORT}`);

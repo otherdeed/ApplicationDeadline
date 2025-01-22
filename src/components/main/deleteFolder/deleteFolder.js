@@ -12,7 +12,7 @@ function DeleteFolder({onClose, isOpen, folderId}){
     const dispatch = useDispatch();
     function deleteFolder(){
         try {
-            axios.post('http://localhost:3001/deleteFolder',{
+            axios.post('https://deadlineminder.store/deleteFolder',{
                 id_folder: folderId,
                 members: myGroupMembers
             })

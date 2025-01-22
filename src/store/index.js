@@ -4,6 +4,7 @@ import userReducer from './client/userSlice';   // Переименуйте на
 import myGroupSlice from './client/myGroupSlice'
 import myDeadlineSlice from './client/myDeadlineSlice'
 import filterSlice from './client/filterSlice'
+import serverInfoSlice from './client/serverInfoSlice'
 
 const store = configureStore({
     reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
         myGroup: myGroupSlice,
         myDeadlines: myDeadlineSlice,
         filter: filterSlice,
+        serverInfo: serverInfoSlice,
     },
 });
 

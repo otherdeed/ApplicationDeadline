@@ -43,7 +43,7 @@ function AddDeadlineModal({ isOpen, onClose, folder }) {
 
     try {
       const newDeadline = await axios.post(
-        "http://localhost:3001/newDeadline",
+        "https://deadlineminder.store/newDeadline",
         {
           subject,
           description,

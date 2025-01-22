@@ -5,26 +5,62 @@ const { default: axios } = require('axios');
 const app = express();
 const PORT = 3001;
 let clients = []; // Список клиентов, ожидающих сообщения
+const allowedDomain = 'https://deadlineminder.ru'; // Замените на ваш домен
 
-app.use(cors()); // Включаем CORS для всех маршрутов
+// Функция для логирования
+
+
+// Middleware для проверки CORS
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Разрешаем локальные запросы и запросы с определенного домена
+        if (origin === 'http://bot-req' || origin === allowedDomain) {
+            callback(null, true);
+        } else {
+            callback('Отказано в доступе');
+        }
+    },
+};
+
+// Применяем CORS с заданными опциями
+app.use(cors(corsOptions));
 app.use(express.json()); // Для парсинга JSON в теле запроса
 
 const generateRandomId = (length = 5) => Math.random().toString(36).substring(2, 2 + length);
 
 const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'deadline_db' // Убедитесь, что это имя вашей базы данных
+    host: 'podborra.beget.tech',
+    user: 'podborra_deadmin',
+    password: '&aFK2j16frbz',
+    database: 'podborra_deadmin'
 });
+// Функция для проверки подключения
+function checkConnection() {
+    pool.getConnection((err, connection) => {
+        if (err) {
+            console.error('Ошибка подключения к базе данных');
+            setTimeout(checkConnection, 10000);
+            return;
+        }
+        console.log('Успешное подключение к базе данных!');
+        connection.query('SELECT 1 + 1 AS solution', (error, results) => {
+            connection.release();
 
+            if (error) {
+                console.error('Ошибка выполнения тест-запроса');
+                return;
+            }
+            console.log('Тестовый запрос выполнен успешно'); // Ожидается вывод "2"
+        });
+    });
+}
+
+// Начальная проверка подключения
+checkConnection();
 // Эндпоинт для long polling
-app.get('/poll', (req, res) => {
-    console.log('Клиент подключился для ожидания сообщений');
-    clients.push(res); // Добавляем ответ клиента в массив
+app.get('/', (req, res) => {
+    res.send('Server is running');
 });
-
-// Эндпоинт для создания нового пользователя
 app.post('/newUser', (req, res) => {
     const user = req.body;
     const query = 'INSERT INTO users (tg_id, username, first_name) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE username = ?, first_name = ?';
@@ -500,7 +536,7 @@ app.post('/deleteDeadline', (req, res) => {
 })
 app.post('/deleteGroup', (req, res) => {
     const { id_group } = req.body; // Получаем ID группы из тела запроса
-    const query = "SELECT * FROM groups WHERE id_group = ?"
+    const query = "SELECT * FROM `groups` WHERE id_group = ?"
     pool.query(query, [id_group], (error, result) => {
         if (error) {
             console.error('Error executing query:', error);
@@ -532,7 +568,7 @@ app.post('/deleteGroup', (req, res) => {
         })
     })
     // SQL-запрос для удаления группы
-    const deleteGroupQuery = 'DELETE FROM groups WHERE id_group = ?'; // Предполагается, что таблица называется 'groups' и поле 'id' является первичным ключом
+    const deleteGroupQuery = 'DELETE FROM `groups` WHERE id_group = ?'; // Предполагается, что таблица называется 'groups' и поле 'id' является первичным ключом
 
     pool.query(deleteGroupQuery, [id_group], (error, result) => {
         if (error) {
@@ -549,72 +585,142 @@ app.post('/deleteGroup', (req, res) => {
         res.status(200).json({ message: 'Ваша группа удалена' });
     });
 });
-function trackDeadlines() {
-    setInterval(async () => {
-        const query = 'SELECT * FROM deadlines WHERE due_date BETWEEN ? AND ?';
 
-        // Получаем текущую дату
-        const startDate = new Date();
-        // Создаем новую дату, добавляя 1 день (в миллисекундах)
-        const endDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000);
-
-        pool.query(query, [startDate, endDate], (error, results) => {
+app.post('/fullListUsers', (req, res) => {
+    const {id_group} = req.body
+    const query = 'SELECT * FROM group_members WHERE id_group = ?';
+    pool.query(query, [id_group], (error, result) => {
+        if (error) {
+            console.error('Error executing query:', error);
+            return res.status(500).json({ error: 'An error occurred while fetching the group members.' });
+        }
+        const members = result.map(row => row.member)
+        console.log(members); 
+        const query = 'SELECT f.* FROM users f WHERE f.tg_id IN (?)' 
+        pool.query(query, [members], (error, result) => {
             if (error) {
                 console.error('Error executing query:', error);
-                return;
+                return res.status(500).json({ error: 'An error occurred while fetching the users.' });
             }
-            if (results.length === 0) {
-                return null
-            }
-            results.forEach(deadline => {
-                console.log(deadline);
-                const nameDeadline = deadline.name
-                const diffrentDate = deadline.due_date - new Date()
-                console.log(diffrentDate);
-                console.log(`Дедлайн ${nameDeadline} заканчивается через ${Math.floor(diffrentDate / (1000 * 60 * 60))} часа.`);
-
-                const query = 'SELECT * FROM folders WHERE id_folder = ?'
-                pool.query(query, [deadline.id_folder], (error, result) => {
-                    if (error) {
-                        console.error('Error executing query:', error);
-                        return;
-                    }
-                    if (result.length === 0) {
-                        return null
-                    }
-                    const nameFolder = result[0].name
-                    const id_group = result[0].id_group
-                    console.log(`Из папки ${nameFolder}`);
-                    const query = 'SELECT * FROM group_members WHERE id_group = ?'
-                    pool.query(query, [id_group], async (error, result) => {
-                        if (error) {
-                            console.error('Error executing query:', error);
-                            return;
-                        }
-                        if (result.length === 0) {
-                            return null
-                        }
-                        const members = []
-                        result.forEach(row => {
-                            members.push(row.member)
-                        })
-                        try {
-                            await axios.post('http://localhost:3002/trackDeadline', {
-                                members: members,
-                                nameDeadline: nameDeadline,
-                            })
-                        } catch (error) {
-                            console.error('Error trackDeadline:', error);
-                            return;
-                        }
-                    })
-                })
-            })
-        });
-    }, 43200000)
+            const usersData = result.map(row => ({
+                id: row.tg_id,
+                username: row.username
+            }));
+            console.log(usersData);
+            res.json(usersData);
+                        
+        })
+    })
 }
+)
+app.post('/deleteUser', (req, res) => {
+    const {id_group, tg_id, members, groupName} = req.body
+    const query = 'DELETE FROM group_members WHERE id_group = ? AND member = ?';
+    pool.query(query, [id_group, tg_id], async (error, result) => {
+        if (error) {
+            console.error('Error executing query:', error);
+            return res.status(500).json({ error: 'An error occurred while deleting the user from the group.' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'User not found in the group.' });
+        }
+        clients.forEach(client => {
+            client.json(members); // Отправляем сообщение всем клиентам
+        });
+        clients = []; // Очищаем список клиентов
+        res.status(200).json({ message: 'User deleted from the group' });
+        try{
+            await axios.post('https://localhost:3002/userDeleteGroup',{
+                tg_id: tg_id,
+                groupName: groupName,
+            })
+        }catch(err){
+            console.error('Error userDeleteGroup:');
+        }
+    })
+})
+async function trackDeadlines() {
+    const queryDeadlines = 'SELECT * FROM deadlines WHERE due_date BETWEEN ? AND ?';
+    const deadlines = new Set(); // Используем Set для уникальных значений
+    const folders = [];
 
-trackDeadlines()
+    // Получаем текущую дату
+    const startDate = new Date();
+    // Создаем новую дату, добавляя 1 день (в миллисекундах)
+    const endDate = new Date(startDate.getTime() + 24 * 60 * 60 * 1000);
+
+    try {
+        // Выполняем первый запрос для получения сроков
+        const deadlineResults = await new Promise((resolve, reject) => {
+            pool.query(queryDeadlines, [startDate, endDate], (error, result) => {
+                if (error) {
+                    reject('Error executing deadlines query: ' + error);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+
+        deadlineResults.forEach(res => {
+            deadlines.add({ deadlineName: res.name, idFolder: res.id_folder }); // Добавляем id_folder в Set
+        });
+        console.log(deadlines);
+
+        // Выполняем второй запрос для получения папок
+        if (deadlines.size > 0) {
+            const queryFolders = `SELECT f.* FROM folders f WHERE f.id_folder IN (?)`;
+            const deadlinesArray = Array.from(deadlines).map(deadline => deadline.idFolder);
+            console.log(deadlinesArray);
+
+            const folderResults = await new Promise((resolve, reject) => {
+                pool.query(queryFolders, [deadlinesArray], (error, result) => {
+                    if (error) {
+                        reject('Error executing folders query: ' + error);
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
+
+            folderResults.forEach(folder => {
+                folders.push(folder.id_group);
+            });
+            console.log(folders);
+
+            // Запрос для получения участников групп
+            if (folders.length > 0) {
+                const queryMembers = `SELECT g.name AS groupName, m.member AS memberName FROM groups g JOIN group_members m ON g.id_group = m.id_group WHERE g.id_group IN (?)`;
+                    pool.query(queryMembers, [folders], async (error, result) => {
+                        if (error) {
+                            console.error('Error executing members query:'+ error);
+                        } 
+                        const data = []
+                        result.forEach(row =>{
+                            data.push({group: row.groupName, member: row.memberName})
+                        })
+                        console.log(data);
+                        try{
+                            await axios.post('http://localhost:3002/trackDeadline',{
+                                data:data
+                            })
+                        }
+                        catch(err){
+                            console.error('Error sending message');
+                            return;
+                        }
+                    });
+
+            } else {
+                console.log('No folders found for the unique deadlines.');
+            }
+        } else {
+            console.log('No unique deadlines found.');
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+setInterval(() => {trackDeadlines()},46800000)
 app.listen(PORT, () => {
     console.log(`Сервер запущен на http://localhost:${PORT}`);
 });

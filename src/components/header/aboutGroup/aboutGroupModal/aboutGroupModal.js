@@ -1,10 +1,20 @@
 import './aboutGroupModal.css'
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import MoreInfoData from './moreInfoData/moreInfoData';
 function AboutGroupModal({ onClose, isOpen }) {
     const myGroup = useSelector(state => state.myGroup);
-
+    const user = useSelector(state => state.user.id);
     const [isExiting, setIsExiting] = useState(false);
+    const [isModalOpen, setModalOpen] = useState(false);
+    function openModalInfoData() {
+        setModalOpen(true);
+    }
+
+    // Функция для закрытия модального окна
+    function closeModalInfoData() {
+        setModalOpen(false);
+    }
     const handleClose = () => {
         setIsExiting(true);
         setTimeout(() => {
@@ -19,9 +29,21 @@ function AboutGroupModal({ onClose, isOpen }) {
             return 'Закрытая';
         }
     }
+    function renderMoreData(){
+        if(myGroup.admin === user){
+            return (
+                <div onClick={openModalInfoData}>
+                    <button className='modeDataButton'>Больше информации</button>
+                </div>
+            )
+        } else {
+            return null;
+        }
+    }
     if (!isOpen && !isExiting) return null;
     return (
         <div className="modal-overlaAbout" onClick={handleClose}>
+            <MoreInfoData isOpen={isModalOpen} onClose={closeModalInfoData} />
             <div
                 className={`modal-contentAbout ${isOpen ? 'slide-in' : ''} ${isExiting ? 'slide-out' : ''}`}
                 onClick={(e) => e.stopPropagation()}
@@ -51,6 +73,7 @@ function AboutGroupModal({ onClose, isOpen }) {
                     <div className="about-info">
                         <div>Кол-во учатников:</div>
                         <div>{myGroup.members.length}</div>
+                        {renderMoreData()}
                     </div>
                     <div className="about-info">
                         <div>Тип группы:</div>

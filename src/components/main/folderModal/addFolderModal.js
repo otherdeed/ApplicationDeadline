@@ -21,7 +21,7 @@ function AddFolderModal({ onClose, isOpen }) {
 
         setIsLoading(true);
         try {
-            await axios.post('http://localhost:3001/createNewFolder', {
+            await axios.post('https://deadlineminder.store/createNewFolder', {
                 id: myGroup.id_group,
                 folderName: folderName,
                 members

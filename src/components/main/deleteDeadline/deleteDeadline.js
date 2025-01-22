@@ -18,7 +18,7 @@ function DeleteDeadline({ onClose, isOpen, id, group }) {
     }, [isOpen]);
     async function deleteDeadline() {
         try {
-            await axios.post('http://localhost:3001/deleteDeadline', {
+            await axios.post('https://deadlineminder.store/deleteDeadline', {
                 members: myGroupMembers,
                 deadlineId: id
             });
