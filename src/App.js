@@ -28,7 +28,6 @@ function App() {
     console.log('Отправка GET-запроса на /poll');
     axios.get('https://deadlineminder.store/poll')
       .then(response => {
-        dispatch(setPollstatus('server Connection'));
         const members = response.data;
         if (members.includes(user.id)) {
           return axios.post('https://deadlineminder.store/myGroups', { id: user.id });
@@ -36,10 +35,9 @@ function App() {
         return null;
       })
       .then(response => {
-        dispatch(setPollstatus('server Connection'));
         if (response) {
           dispatch(setGroup(response.data));
-          dispatch(setPollstatus('server Connection'));
+
           setError(null)
           setError(null); // Сбрасываем ошибку при успешном подключении
           if (!isConnected) {
@@ -56,6 +54,7 @@ function App() {
         dispatch(setPollstatus('server Disconnected'));
         setIsConnected(false); // Устанавливаем состояние подключения в false
         setTimeout(longPoll, 5000); // Повторяем запрос через 5 секунд в случае ошибки
+    
       });
   };
   function getGroup(){
@@ -113,7 +112,6 @@ function App() {
     <div className="App">
       <Header />
       <Main />
-      {renderServerConnection()}
     </div>
   );
 }

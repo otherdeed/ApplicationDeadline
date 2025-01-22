@@ -13,6 +13,7 @@ const allowedDomain = 'https://deadlineminder.ru'; // Замените на ва
 // Middleware для проверки CORS
 const corsOptions = {
     origin: function (origin, callback) {
+        console.log(origin)
         // Разрешаем локальные запросы и запросы с определенного домена
         if (origin === 'http://bot-req' || origin === allowedDomain) {
             callback(null, true);
@@ -83,7 +84,7 @@ app.post('/joinGroup', (req, res) => {
         return res.status(400).json({ error: 'id_group и tg_id обязательны' });
     }
     // Запрос для проверки существования группы
-    const groupQuery = 'SELECT * FROM groups WHERE id_group = ?';
+    const groupQuery = 'SELECT * FROM `groups` WHERE id_group = ?';
     pool.query(groupQuery, [id_group], (error, results) => {
         if (error) {
             return res.status(500).json({ error: error.message });
@@ -102,7 +103,7 @@ app.post('/joinGroup', (req, res) => {
             if (members.includes(tg_id)) {
                 return res.status(400).json({ error: 'Вы уже являетесь участником данной группы' });
             } else {
-                const typeGroupQuery = 'SELECT type FROM groups WHERE id_group = ?'
+                const typeGroupQuery = 'SELECT type FROM `groups` WHERE id_group = ?'
                 pool.query(typeGroupQuery, [id_group], (error, results) => {
                     if (error) {
                         return res.status(500).json({ error: error.message });
@@ -118,7 +119,7 @@ app.post('/joinGroup', (req, res) => {
                             res.status(200).json({ message: 'Вы успешно присоединились к группе' });
                         });
                     } else {
-                        const userNameQuery = 'SELECT * FROM groups WHERE id_group = ?'
+                        const userNameQuery = 'SELECT * FROM `groups` WHERE id_group = ?'
                         pool.query(userNameQuery, [id_group], (error, results) => {
                             if (error) {
                                 console.error('Ошибка при выполнении запроса:', error);
@@ -159,7 +160,7 @@ app.post('/actionJoinPrivateGroup', (req, res) => {
     console.log(id_group);
 
     if (action === 'approve') {
-        const groupQuery = 'SELECT * FROM groups WHERE id_group = ?';
+        const groupQuery = 'SELECT * FROM `groups` WHERE id_group = ?';
 
         // Проверяем наличие группы
         pool.query(groupQuery, [id_group], (error, results) => {
@@ -182,7 +183,7 @@ app.post('/actionJoinPrivateGroup', (req, res) => {
             });
         });
     } else if (action === 'reject') {
-        const groupQuery = 'SELECT * FROM groups WHERE id_group = ?';
+        const groupQuery = 'SELECT * FROM `groups` WHERE id_group = ?';
         console.log(id_group);
         pool.query(groupQuery, [id_group], (error, results) => {
             if (error) {
@@ -208,7 +209,7 @@ app.post('/createNewGroup', (req, res) => {
     const id_group = generateRandomId(5);
 
     // Вставка новой группы
-    const query = 'INSERT INTO groups (id_group, name, type, admin) VALUES (?, ?, ?, ?)';
+    const query = 'INSERT INTO `groups` (id_group, name, type, admin) VALUES (?, ?, ?, ?)';
     pool.query(query, [id_group, name, type, admin], (error, results) => {
         if (error) {
             return res.status(500).json({ error: error.message });
@@ -250,10 +251,11 @@ app.post('/myGroups', (req, res) => {
     const { id } = req.body;
 
     // Запрос для получения групп, в которых состоит пользователь
-    const groupsQuery = `
-        SELECT * FROM groups 
-        WHERE id_group IN (SELECT id_group FROM group_members WHERE member = ?)
-    `;
+   const groupsQuery = `
+    SELECT * FROM \`groups\`
+    WHERE id_group IN (SELECT id_group FROM group_members WHERE member = ?)
+`;
+
 
     pool.query(groupsQuery, [id], (error, groupResults) => {
         if (error) {
@@ -461,7 +463,7 @@ app.post('/leaveGroup', async (req, res) => {
         return res.status(400).json({ message: 'Group ID and member are required.' });
     }
 
-    const memberQuery = 'SELECT * FROM groups WHERE id_group = ?';
+    const memberQuery = 'SELECT * FROM `groups` WHERE id_group = ?';
     let isAdmin = false;
 
     // Проверка, является ли участник администратором группы
@@ -689,7 +691,13 @@ async function trackDeadlines() {
 
             // Запрос для получения участников групп
             if (folders.length > 0) {
-                const queryMembers = `SELECT g.name AS groupName, m.member AS memberName FROM groups g JOIN group_members m ON g.id_group = m.id_group WHERE g.id_group IN (?)`;
+                const queryMembers = `
+    SELECT g.name AS groupName, m.member AS memberName 
+    FROM \`groups\` g 
+    JOIN group_members m ON g.id_group = m.id_group 
+    WHERE g.id_group IN (?)
+`;
+
                     pool.query(queryMembers, [folders], async (error, result) => {
                         if (error) {
                             console.error('Error executing members query:'+ error);
@@ -721,6 +729,7 @@ async function trackDeadlines() {
     }
 }
 setInterval(() => {trackDeadlines()},46800000)
-app.listen(PORT, () => {
+app.listen(PORT,() => {
     console.log(`Сервер запущен на http://localhost:${PORT}`);
 });
+
