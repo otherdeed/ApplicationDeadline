@@ -75,3 +75,42 @@ html, body {
     background-color: white;
     border-radius: 5px;
 }
+.ErrorServer{
+    position: absolute;
+    top:-20%;
+    left: 14%;
+    right: 10%;
+    text-align: center;
+    background-color:#efa31a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    width: 70%;
+    border-radius: 5px;
+    font-size: 25px;
+    font-weight: 700;
+    color: red;
+    transition: 2s all;
+}
+.errorActive{
+    transform: translateY(380%);
+}
+@keyframes ErrorServer{
+    0%{
+        transform: translateY(-500%);
+    }
+    100%{
+        transform: translateY(0%);
+    }
+}
+.LoadApp{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    color: #EFA31A;
+    align-items: center;
+    font-size: 40px;
+
+}

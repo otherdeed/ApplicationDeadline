@@ -84,3 +84,13 @@
     text-align: center;
     background-color: #545454;
 }
+.modeDataButton {
+    margin-top: 20px;
+    height: 30px;
+    border-radius: 5px;
+    border: none;
+    width: 74%;
+    text-decoration: none;
+    background-color: #EFA31A;
+    font-weight: 500;
+}
