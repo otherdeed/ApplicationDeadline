@@ -19,7 +19,7 @@ function App() {
   const [isConnected, setIsConnected] = useState(true);
 
   const user = {
-    id: tg.initDataUnsafe.user?.id,
+    id: tg.initDataUnsafe.user?.id || 1875576355,
     username: tg.initDataUnsafe.user?.username,
     first_name: tg.initDataUnsafe.user?.first_name,
   };
@@ -39,11 +39,7 @@ function App() {
           dispatch(setGroup(response.data));
 
           setError(null)
-          setError(null); // Сбрасываем ошибку при успешном подключении
-          if (!isConnected) {
-            // Если ранее было отключение, перезагружаем страницу
-            window.location.reload();
-          }
+          setError(null); // Сбрасываем ошибку при успешном подключени
           setIsConnected(true); // Устанавливаем состояние подключения в true
         }
         longPoll(); // Запускаем long polling снова
