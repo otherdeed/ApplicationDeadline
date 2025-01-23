@@ -18,7 +18,7 @@ const corsOptions = {
         if (origin === 'http://bot-req' || origin === allowedDomain) {
             callback(null, true);
         } else {
-            callback('Отказано в доступе');
+            callback(`Отказано в доступе: ${origin}`);
         }
     },
 };
@@ -59,13 +59,13 @@ function checkConnection() {
 // Начальная проверка подключения
 checkConnection();
 // Эндпоинт для long polling
-app.get('/', (req, res) => {
-    res.send('Server is running');
-});
 app.get('/poll', (req, res) => {
     console.log('Клиент подключился для ожидания сообщений');
     clients.push(res); // Добавляем ответ клиента в массив
 })
+app.get('/', (req, res) => {
+    res.send('Server is running');
+});
 app.post('/newUser', (req, res) => {
     const user = req.body;
     const query = 'INSERT INTO users (tg_id, username, first_name) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE username = ?, first_name = ?';
@@ -634,7 +634,6 @@ app.post('/deleteUser', (req, res) => {
             client.json(members); // Отправляем сообщение всем клиентам
         });
         clients = []; // Очищаем список клиентов
-        res.status(200).json({ message: 'User deleted from the group' });
         try{
             await axios.post('https://localhost:3002/userDeleteGroup',{
                 tg_id: tg_id,
@@ -643,6 +642,7 @@ app.post('/deleteUser', (req, res) => {
         }catch(err){
             console.error('Error userDeleteGroup:');
         }
+        res.status(200).json({ message: 'User deleted from the group' });
     })
 })
 async function trackDeadlines() {
