@@ -11,6 +11,8 @@
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "imap": "^0.8.19",
+    "mailparser": "^3.7.2",
     "mongoose": "^8.8.3",
     "mysql": "^2.18.1",
     "node-telegram-bot-api": "^0.66.0",

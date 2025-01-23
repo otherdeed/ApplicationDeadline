@@ -1,12 +1,84 @@
 const axios = require('axios');
 const TelegramBot = require('node-telegram-bot-api');
 require('dotenv').config();
+const Imap = require('imap');
+const { simpleParser } = require('mailparser');
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 const express = require('express');
 const cors = require('cors');
 const app = express();
 const PORT = 3002;
+// Настройки IMAP
+const imap = new Imap({
+    user: process.env.USERMAIL, // Ваша почта
+    password: process.env.PASSWORDMAIL, // Ваш пароль или App Password
+    host: process.env.HOSTMAIL, // IMAP сервер
+    port: 993,
+    tls: true
+});
+
+let processedEmails = new Set(); // Множество для хранения идентификаторов обработанных писем
+
+function openInbox(cb) {
+    imap.openBox('INBOX', true, cb);
+}
+
+// Функция для проверки новых сообщений
+function checkForNewEmails() {
+    imap.once('ready', () => {
+        openInbox((err, box) => {
+            if (err) throw err;
+
+            // Подписка на новые сообщения
+            imap.on('mail', (numNewMail) => {
+                fetchNewEmails();
+            });
+        });
+    });
+
+    imap.connect();
+}
+
+// Функция для получения и обработки новых сообщений
+function fetchNewEmails() {
+    imap.search(['UNSEEN'], (err, results) => {
+        if (err) throw err;
+
+        if (results.length) {
+            const f = imap.fetch(results, { bodies: '' });
+            f.on('message', (msg) => {
+                msg.once('attributes', (attrs) => {
+                    const emailId = attrs.uid; // Получаем уникальный идентификатор письма
+
+                    // Если письмо уже обработано, пропускаем его
+                    if (processedEmails.has(emailId)) {
+                        return;
+                    }
+
+                    msg.on('body', (stream, info) => {
+                        simpleParser(stream, async (err, parsed) => {
+                            if (err) throw err;
+
+                            // Отправляем сообщение в Telegram
+                            // Добавляем идентификатор письма в множество обработанных
+                            processedEmails.add(emailId);
+                        });
+                    });
+                });
+            });
+
+            f.once('end', async () => {
+                console.log('Все новые сообщения обработаны.');
+                await bot.sendMessage(process.env.ADMINTELEGRAMID, 'Пользователь отправил сообщение на почту');
+            });
+        } else {
+            console.log('Нет новых сообщений.');
+        }
+    });
+}
+checkForNewEmails()
+
 
 app.use(cors());
 app.use(express.json());
@@ -71,13 +143,13 @@ bot.on('message', async (msg) => {
     // Ваш существующий код обработки сообщений
     if (text === '/start') {
         try {
-            // await axios.post('http://localhost:3001/newUser ', {
-            //     tg_id: chatId,
-            //     first_name: msg.from.first_name,
-            //     username: msg.from.username,
-            // }, {
-            //     headers: { 'Content-Type': 'application/json' ,'Origin': 'http://bot-req' },
-            // });
+            await axios.post('http://localhost:3001/newUser ', {
+                tg_id: chatId,
+                first_name: msg.from.first_name,
+                username: msg.from.username,
+            }, {
+                headers: { 'Content-Type': 'application/json' ,'Origin': 'http://bot-req' },
+            });
             await bot.sendMessage(chatId, `👋 Привет! Добро пожаловать в **DeadlineMinder** — ваш надежный помощник в создании и управлении дедлайнами!`, {
                 reply_markup: { keyboard: [['Создать группу 🌟👫'], ['Присоединиться к группе 🤗🔗'], ['Удалиться из группы ❌🚶‍♂️'], ['Посмотреть мои группы 👁️📑'],['Написать в поддержку 🛠️📞']], one_time_keyboard: true },
             });
