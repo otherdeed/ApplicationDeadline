@@ -62,6 +62,10 @@ checkConnection();
 app.get('/', (req, res) => {
     res.send('Server is running');
 });
+app.get('/poll', (req, res) => {
+    console.log('Клиент подключился для ожидания сообщений');
+    clients.push(res); // Добавляем ответ клиента в массив
+})
 app.post('/newUser', (req, res) => {
     const user = req.body;
     const query = 'INSERT INTO users (tg_id, username, first_name) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE username = ?, first_name = ?';
