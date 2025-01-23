@@ -19,3 +19,6 @@ const group = {
             }
     ]
 }
+
+email adress = help@deadlineminder.ru
+email password = gv&il53&0QOF

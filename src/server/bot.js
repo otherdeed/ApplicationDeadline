@@ -17,6 +17,7 @@ const commands = [
     { command: "join", description: "Присоединиться к группе" },
     { command: "leave", description: "Удалиться из группы" },
     { command: "group", description: "Посмотреть мои группы" },
+    { command: "help", description: "Поддержка" },
 ];
 
 bot.setMyCommands(commands);
@@ -70,15 +71,15 @@ bot.on('message', async (msg) => {
     // Ваш существующий код обработки сообщений
     if (text === '/start') {
         try {
-            await axios.post('http://localhost:3001/newUser ', {
-                tg_id: chatId,
-                first_name: msg.from.first_name,
-                username: msg.from.username,
-            }, {
-                headers: { 'Content-Type': 'application/json' ,'Origin': 'http://bot-req' },
-            });
+            // await axios.post('http://localhost:3001/newUser ', {
+            //     tg_id: chatId,
+            //     first_name: msg.from.first_name,
+            //     username: msg.from.username,
+            // }, {
+            //     headers: { 'Content-Type': 'application/json' ,'Origin': 'http://bot-req' },
+            // });
             await bot.sendMessage(chatId, `👋 Привет! Добро пожаловать в **DeadlineMinder** — ваш надежный помощник в создании и управлении дедлайнами!`, {
-                reply_markup: { keyboard: [['Создать группу 🌟👫'], ['Присоединиться к группе 🤗🔗'], ['Удалиться из группы ❌🚶‍♂️'], ['Посмотреть мои группы 👁️📑']], one_time_keyboard: true },
+                reply_markup: { keyboard: [['Создать группу 🌟👫'], ['Присоединиться к группе 🤗🔗'], ['Удалиться из группы ❌🚶‍♂️'], ['Посмотреть мои группы 👁️📑'],['Написать в поддержку 🛠️📞']], one_time_keyboard: true },
             });
 
         } catch (error) {
@@ -128,14 +129,19 @@ bot.on('message', async (msg) => {
                 headers: { 'Content-Type': 'application/json' ,'Origin': 'http://bot-req' },
             });
             await bot.sendMessage(chatId, `Группа "${name}" успешно создана!\n\nВаш уникальный ID группы: ${newGroup.data}\n\nОн нужен для новых участников, которые хотят присоединиться к вашей группе.`,{
-                reply_markup: { keyboard: [['Создать группу 🌟👫'], ['Присоединиться к группе 🤗🔗'], ['Удалиться из группы ❌🚶‍♂️'], ['Посмотреть мои группы 👁️📑']] },
+                reply_markup: { keyboard: [['Создать группу 🌟👫'], ['Присоединиться к группе 🤗🔗'], ['Удалиться из группы ❌🚶‍♂️'], ['Посмотреть мои группы 👁️📑'],['Написать в поддержку 🛠️📞']] },
             });
         } catch (error) {
             console.error('Ошибка создания группы:', error);
             bot.sendMessage(chatId, 'Произошла ошибка при создании группы.');
         }
         delete waitingForGroupInfo[chatId];
-    } else if (text === 'Присоединиться к группе 🤗🔗' || text === '/join') {
+    } else if (text === '/help' || text === 'Написать в поддержку 🛠️📞') {
+        const responseMessage = `
+        Привет! 👋\n\nЕсли у вас есть вопросы или вам нужна помощь, не стесняйтесь обращаться к нам! \n\n📧 Вы можете написать нам на почту: help@deadlineminder.ru\n\n💬 Или свяжитесь с нами через Telegram: @deadlineminder`;
+        await bot.sendMessage(chatId, responseMessage);
+    }
+    else if (text === 'Присоединиться к группе 🤗🔗' || text === '/join') {
         bot.sendMessage(chatId, 'Введите ID группы, к которой хотите присоединиться:');
         waitingForGroupInfo[chatId] = { step: 'joinGroup' };
     } else if (waitingForGroupInfo[chatId]?.step === 'joinGroup') {
@@ -181,7 +187,7 @@ bot.on('message', async (msg) => {
             }
             response.data.forEach(async group => {
                 await bot.sendMessage(chatId, `Группа: ${group.name}\nID: ${group.id_group}`,{
-                    reply_markup: { keyboard: [['Создать группу 🌟👫'], ['Присоединиться к группе 🤗🔗'], ['Удалиться из группы ❌🚶‍♂️'], ['Посмотреть мои группы 👁️📑']] },
+                    reply_markup: { keyboard: [['Создать группу 🌟👫'], ['Присоединиться к группе 🤗🔗'], ['Удалиться из группы ❌🚶‍♂️'], ['Посмотреть мои группы 👁️📑'],['Написать в поддержку 🛠️📞']] },
                 });
             });
         } catch (error) {
