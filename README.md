@@ -9,4 +9,8 @@
 
 Давайте повысим вашу продуктивность! 🚀
 
+<<<<<<< HEAD
 ## https://telegram.me/DeadlineMinderBot
+=======
+## @DeadlineMinderBot
+>>>>>>> cf5b77411040a193bc00f78d662c17aaaed62c79
