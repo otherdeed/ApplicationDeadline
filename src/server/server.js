@@ -6,7 +6,7 @@ const app = express();
 const PORT = 3001;
 require('dotenv').config();
 let clients = []; // Список клиентов, ожидающих сообщения
-const allowedDomain = 'https://deadlineminder.ru'; // Замените на ваш домен
+const allowedDomain = process.env.ALLOWDOMAIN; // Замените на ваш домен
 
 
 // Функция для логирования
@@ -17,7 +17,7 @@ const corsOptions = {
     origin: function (origin, callback) {
         console.log(origin)
         // Разрешаем локальные запросы и запросы с определенного домена
-        if (origin === 'http://bot-req' || origin === allowedDomain) {
+        if (origin === process.env.BOTDOMAIN || origin === allowedDomain) {
             callback(null, true);
         } else {
             callback(`Отказано в доступе: ${origin}`);
