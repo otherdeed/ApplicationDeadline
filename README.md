@@ -9,4 +9,4 @@
 
 Давайте повысим вашу продуктивность! 🚀
 
-## @DeadlineMinderBot
+## https://telegram.me/DeadlineMinderBot
