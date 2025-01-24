@@ -4,8 +4,10 @@ const mysql = require('mysql');
 const { default: axios } = require('axios');
 const app = express();
 const PORT = 3001;
+require('dotenv').config();
 let clients = []; // Список клиентов, ожидающих сообщения
 const allowedDomain = 'https://deadlineminder.ru'; // Замените на ваш домен
+
 
 // Функция для логирования
 
@@ -30,10 +32,10 @@ app.use(express.json()); // Для парсинга JSON в теле запро�
 const generateRandomId = (length = 5) => Math.random().toString(36).substring(2, 2 + length);
 
 const pool = mysql.createPool({
-    host: 'podborra.beget.tech',
-    user: 'podborra_deadmin',
-    password: '&aFK2j16frbz',
-    database: 'podborra_deadmin'
+    host: process.env.POLLHOST,
+    user: process.env.POOLUSER,
+    password: process.env.POLLPASSWORD,
+    database: process.env.POOLDATABASE
 });
 // Функция для проверки подключения
 function checkConnection() {
