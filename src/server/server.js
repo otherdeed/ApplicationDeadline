@@ -4,6 +4,7 @@ const mysql = require('mysql');
 const { default: axios } = require('axios');
 const app = express();
 const PORT = 3001;
+require('dotenv').config();
 let clients = []; // Список клиентов, ожидающих сообщения
 // const allowedDomain = 'https://deadlineminder.ru'; // Замените на ваш домен
 
@@ -26,10 +27,10 @@ app.use(express.json()); // Для парсинга JSON в теле запро�
 const generateRandomId = (length = 5) => Math.random().toString(36).substring(2, 2 + length);
 
 const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'deadline_db'
+    host: process.env.POLLHOST,
+    user: process.env.POOLUSER,
+    password: process.env.POLLPASSWORD,
+    database: process.env.POOLDATABASE
 });
 // Функция для проверки подключения
 function checkConnection() {

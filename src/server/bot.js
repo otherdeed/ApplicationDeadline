@@ -148,21 +148,97 @@ bot.on('message', async (msg) => {
                 first_name: msg.from.first_name,
                 username: msg.from.username,
             }, {
-                headers: { 'Content-Type': 'application/json' ,'Origin': 'http://bot-req' },
+                headers: { 'Content-Type': 'application/json', 'Origin': 'http://bot-req' },
             });
             await bot.sendMessage(chatId, `👋 Привет! Добро пожаловать в **DeadlineMinder** — ваш надежный помощник в создании и управлении дедлайнами!`, {
-                reply_markup: { keyboard: [['Создать группу 🌟👫'], ['Присоединиться к группе 🤗🔗'], ['Удалиться из группы ❌🚶‍♂️'], ['Посмотреть мои группы 👁️📑'],['Написать в поддержку 🛠️📞']], one_time_keyboard: true },
+                reply_markup: { keyboard: [['Создать группу 🌟👫'], ['Присоединиться к группе 🤗🔗'], ['Удалиться из группы ❌🚶‍♂️'], ['Посмотреть мои группы 👁️📑'], ['Написать в поддержку 🛠️📞']], one_time_keyboard: true },
             });
 
         } catch (error) {
             console.error('Ошибка добавления пользователя:', error);
         }
-    } else if (text === 'Создать группу 🌟👫' || text === '/create') {
-        try{
+    } else if (text === '/help' || text === 'Написать в поддержку 🛠️📞') {
+        const responseMessage = `
+        Привет! 👋\n\nЕсли у вас есть вопросы или вам нужна помощь, не стесняйтесь обращаться к нам! \n\n📧 Вы можете написать нам на почту: help@deadlineminder.ru\n\n💬 Или свяжитесь с нами через Telegram: @deadlineminder`;
+        await bot.sendMessage(chatId, responseMessage);
+    }
+    else if (text === 'Присоединиться к группе 🤗🔗' || text === '/join') {
+        bot.sendMessage(chatId, 'Введите ID группы, к которой хотите присоединиться:');
+        waitingForGroupInfo[chatId] = { step: 'joinGroup' };
+    } else if (waitingForGroupInfo[chatId]?.step === 'joinGroup') {
+        try {
             const myGroups = await axios.post('http://localhost:3001/myGroups', {
                 id: chatId
             }, {
-                headers: { 'Content-Type': 'application/json' ,'Origin': 'http://bot-req' },
+                headers: { 'Content-Type': 'application/json', 'Origin': 'http://bot-req' },
+            });
+            const countGroup = myGroups.data.length;
+            if (countGroup >= 8) {
+                await bot.sendMessage(chatId, 'Вы достигли лимита созданных групп. Пожалуйста, удалите ненужные группы.');
+                return;
+            } else {
+                const groupId = text.trim();
+                try {
+                    await axios.post('http://localhost:3001/joinGroup', {
+                        id_group: groupId,
+                        tg_id: chatId
+                    }, {
+                        headers: { 'Content-Type': 'application/json', 'Origin': 'http://bot-req' },
+                    });
+                    await bot.sendMessage(chatId, `Вы успешно присоединились к группе с ID: ${groupId}`);
+                } catch (error) {
+                    await bot.sendMessage(chatId, error.response.data.error);
+                }
+                delete waitingForGroupInfo[chatId];
+            }
+        } catch (error) {
+            console.error('Ошибка получения списка моих групп:', error);
+            await bot.sendMessage(chatId, 'Произошла ошибка при попытке присоединиться к группе.');
+        }
+    } else if (text === 'Посмотреть мои группы 👁️📑' || text === '/group') {
+        try {
+            const response = await axios.post('http://localhost:3001/myGroups', {
+                id: chatId,
+            }, {
+                headers: { 'Content-Type': 'application/json', 'Origin': 'http://bot-req' },
+            });
+            if (response.data.length === 0) {
+                bot.sendMessage(chatId, 'У вас нет групп.');
+                return;
+            }
+            response.data.forEach(async group => {
+                await bot.sendMessage(chatId, `Группа: ${group.name}\nID: ${group.id_group}`, {
+                    reply_markup: { keyboard: [['Создать группу 🌟👫'], ['Присоединиться к группе 🤗🔗'], ['Удалиться из группы ❌🚶‍♂️'], ['Посмотреть мои группы 👁️📑'], ['Написать в поддержку 🛠️📞']] },
+                });
+            });
+        } catch (error) {
+            console.error('Error fetching groups:', error);
+            await bot.sendMessage(chatId, 'Произошла ошибка при попытке получить список ваших групп.');
+        }
+    } else if (text === 'Удалиться из группы ❌🚶‍♂️' || text === '/leave') {
+        bot.sendMessage(chatId, 'Введите ID группы, из которой хотите удалиться:');
+        waitingForGroupInfo[chatId] = { step: 'leaveGroup' };
+    } else if (waitingForGroupInfo[chatId]?.step === 'leaveGroup') {
+        const groupId = text.trim();
+        try {
+            const res = await axios.post('http://localhost:3001/leaveGroup', {
+                id_group: groupId,
+                member: chatId,
+            }, {
+                headers: { 'Content-Type': 'application/json', 'Origin': 'http://bot-req' },
+            });
+            bot.sendMessage(chatId, res.data.message);
+        } catch (error) {
+            console.error('Ошибка удаления из группы:', error);
+            await bot.sendMessage(chatId, 'Произошла ошибка при попытке удалиться из группы.');
+        }
+        delete waitingForGroupInfo[chatId];
+    } else if (text === 'Создать группу 🌟👫' || text === '/create') {
+        try {
+            const myGroups = await axios.post('http://localhost:3001/myGroups', {
+                id: chatId
+            }, {
+                headers: { 'Content-Type': 'application/json', 'Origin': 'http://bot-req' },
             });
             const countGroup = myGroups.data.length;
             if (countGroup >= 8) {
@@ -171,12 +247,12 @@ bot.on('message', async (msg) => {
                 bot.sendMessage(chatId, 'Придумайте название группы:');
                 waitingForGroupInfo[chatId] = { step: 'name' };
             }
-        } catch(error){
+        } catch (error) {
             console.error('Ошибка получения списка моих групп:', error);
         }
     } else if (waitingForGroupInfo[chatId]?.step === 'name') {
         waitingForGroupInfo[chatId].name = text.trim();
-        if(waitingForGroupInfo[chatId].name.length > 12){
+        if (waitingForGroupInfo[chatId].name.length > 12) {
             bot.sendMessage(chatId, 'Слишком длинное название, название не должно превышать длину 12 символом.');
             return;
         }
@@ -197,91 +273,15 @@ bot.on('message', async (msg) => {
                 name,
                 type,
                 admin: chatId,
-            },{
-                headers: { 'Content-Type': 'application/json' ,'Origin': 'http://bot-req' },
+            }, {
+                headers: { 'Content-Type': 'application/json', 'Origin': 'http://bot-req' },
             });
-            await bot.sendMessage(chatId, `Группа "${name}" успешно создана!\n\nВаш уникальный ID группы: ${newGroup.data}\n\nОн нужен для новых участников, которые хотят присоединиться к вашей группе.`,{
-                reply_markup: { keyboard: [['Создать группу 🌟👫'], ['Присоединиться к группе 🤗🔗'], ['Удалиться из группы ❌🚶‍♂️'], ['Посмотреть мои группы 👁️📑'],['Написать в поддержку 🛠️📞']] },
+            await bot.sendMessage(chatId, `Группа "${name}" успешно создана!\n\nВаш уникальный ID группы: ${newGroup.data}\n\nОн нужен для новых участников, которые хотят присоединиться к вашей группе.`, {
+                reply_markup: { keyboard: [['Создать группу 🌟👫'], ['Присоединиться к группе 🤗🔗'], ['Удалиться из группы ❌🚶‍♂️'], ['Посмотреть мои группы 👁️📑'], ['Написать в поддержку 🛠️📞']] },
             });
         } catch (error) {
             console.error('Ошибка создания группы:', error);
             bot.sendMessage(chatId, 'Произошла ошибка при создании группы.');
-        }
-        delete waitingForGroupInfo[chatId];
-    } else if (text === '/help' || text === 'Написать в поддержку 🛠️📞') {
-        const responseMessage = `
-        Привет! 👋\n\nЕсли у вас есть вопросы или вам нужна помощь, не стесняйтесь обращаться к нам! \n\n📧 Вы можете написать нам на почту: help@deadlineminder.ru\n\n💬 Или свяжитесь с нами через Telegram: @deadlineminder`;
-        await bot.sendMessage(chatId, responseMessage);
-    }
-    else if (text === 'Присоединиться к группе 🤗🔗' || text === '/join') {
-        bot.sendMessage(chatId, 'Введите ID группы, к которой хотите присоединиться:');
-        waitingForGroupInfo[chatId] = { step: 'joinGroup' };
-    } else if (waitingForGroupInfo[chatId]?.step === 'joinGroup') {
-        try{
-            const myGroups = await axios.post('http://localhost:3001/myGroups', {
-                id: chatId
-            }, {
-                headers: { 'Content-Type': 'application/json' ,'Origin': 'http://bot-req' },
-            });
-            const countGroup = myGroups.data.length;
-            if (countGroup >= 8) {
-                await bot.sendMessage(chatId, 'Вы достигли лимита созданных групп. Пожалуйста, удалите ненужные группы.');
-                return;
-            } else {
-                const groupId = text.trim();
-                try {
-                    await axios.post('http://localhost:3001/joinGroup', {
-                        id_group: groupId,
-                        tg_id: chatId
-                    }, {
-                        headers: { 'Content-Type': 'application/json' ,'Origin': 'http://bot-req' },
-                    });
-                    await bot.sendMessage(chatId, `Вы успешно присоединились к группе с ID: ${groupId}`);
-                } catch (error) {
-                    await bot.sendMessage(chatId, error.response.data.error);
-                }
-                delete waitingForGroupInfo[chatId];
-            }
-        }catch (error) {
-            console.error('Ошибка получения списка моих групп:', error);
-            await bot.sendMessage(chatId, 'Произошла ошибка при попытке присоединиться к группе.');
-        }
-    } else if (text === 'Посмотреть мои группы 👁️📑' || text === '/group') {
-        try {
-            const response = await axios.post('http://localhost:3001/myGroups', {
-                id: chatId,
-            }, {
-                headers: { 'Content-Type': 'application/json' ,'Origin': 'http://bot-req' },
-            });
-            if(response.data.length === 0){
-                bot.sendMessage(chatId, 'У вас нет групп.');
-                return;
-            }
-            response.data.forEach(async group => {
-                await bot.sendMessage(chatId, `Группа: ${group.name}\nID: ${group.id_group}`,{
-                    reply_markup: { keyboard: [['Создать группу 🌟👫'], ['Присоединиться к группе 🤗🔗'], ['Удалиться из группы ❌🚶‍♂️'], ['Посмотреть мои группы 👁️📑'],['Написать в поддержку 🛠️📞']] },
-                });
-            });
-        } catch (error) {
-            console.error('Error fetching groups:', error);
-            await bot.sendMessage(chatId, 'Произошла ошибка при попытке получить список ваших групп.');
-        }
-    } else if (text === 'Удалиться из группы ❌🚶‍♂️' || text === '/leave') {
-        bot.sendMessage(chatId, 'Введите ID группы, из которой хотите удалиться:');
-        waitingForGroupInfo[chatId] = { step: 'leaveGroup' };
-    } else if (waitingForGroupInfo[chatId]?.step === 'leaveGroup') {
-        const groupId = text.trim();
-        try {
-            const res = await axios.post('http://localhost:3001/leaveGroup', {
-                id_group: groupId,
-                member: chatId,
-            }, {
-                headers: { 'Content-Type': 'application/json' ,'Origin': 'http://bot-req' },
-            });
-            bot.sendMessage(chatId, res.data.message);
-        } catch (error) {
-            console.error('Ошибка удаления из группы:', error);
-            await bot.sendMessage(chatId, 'Произошла ошибка при попытке удалиться из группы.');
         }
         delete waitingForGroupInfo[chatId];
     }
@@ -296,17 +296,17 @@ bot.on('callback_query', async (call) => {
                 tg_id: data.idMember,
                 id_group: data.id_group
             }, {
-                headers: { 'Content-Type': 'application/json' ,'Origin': 'http://bot-req' },
+                headers: { 'Content-Type': 'application/json', 'Origin': 'http://bot-req' },
             });
 
             const { chatId, message } = response.data;
             await bot.sendMessage(chatId, message);
-            await bot.editMessageText('Пользователь увидит ваш ответ.',{
+            await bot.editMessageText('Пользователь увидит ваш ответ.', {
                 chat_id: call.message.chat.id,
                 message_id: call.message.message_id,
             });
             console.log(call);
-            
+
         } catch (error) {
             console.error('Error in actionJoinPrivateGroup:', error.message);
             await bot.sendMessage(call.from.id, 'Произошла ошибка при обработке вашего запроса.');
@@ -318,12 +318,12 @@ bot.on('callback_query', async (call) => {
             const res = await axios.post('http://localhost:3001/deleteGroup', {
                 id_group: data.id_group
             }, {
-                headers: { 'Content-Type': 'application/json' ,'Origin': 'http://bot-req' },
+                headers: { 'Content-Type': 'application/json', 'Origin': 'http://bot-req' },
             });
 
             if (res.data) {
                 const { message } = res.data;
-                bot.editMessageText(message,{
+                bot.editMessageText(message, {
                     chat_id: call.message.chat.id,
                     message_id: call.message.message_id,
                 });
@@ -337,7 +337,7 @@ bot.on('callback_query', async (call) => {
     }
 
     if (data.action === 'rejectDeleteGroup') {
-        await bot.editMessageText('Ваша группа остается',{
+        await bot.editMessageText('Ваша группа остается', {
             chat_id: call.message.chat.id,
             message_id: call.message.message_id,
         });
@@ -368,32 +368,32 @@ app.post('/messageDeleteGroup', async (req, res) => {
     });
 });
 app.post('/createDeadline', (req, res) => {
-    const {members, nameGroup} = req.body;
+    const { members, nameGroup } = req.body;
     members.forEach(async (member) => {
         await bot.sendMessage(member, `В группе "${nameGroup}" появился новый дедлайн`)
     })
 })
 
 app.post('/trackDeadline', (req, res) => {
-    const {data} = req.body
+    const { data } = req.body
     const sortData = new Set()
     data.forEach(d => {
         sortData.add(d)
     })
     console.log(Array.from(sortData));
-    Array.from(sortData).forEach(async d =>{
+    Array.from(sortData).forEach(async d => {
         await bot.sendMessage(d.member, `В группе "${d.group}" завтра заканчивается дедлайн`)
     })
 
 })
 app.post('/groupDelete', (req, res) => {
-    const {members, groupName} = req.body;
+    const { members, groupName } = req.body;
     members.forEach(async (member) => {
         await bot.sendMessage(member, `Группа "${groupName}" была удалена`)
     })
 })
 app.post('/userDeleteGroup', async (req, res) => {
-    const {tg_id, groupName} = req.body;
+    const { tg_id, groupName } = req.body;
     await bot.sendMessage(tg_id, `Вы были удалены с группы "${groupName}"`)
 })
 app.listen(PORT, () => {
