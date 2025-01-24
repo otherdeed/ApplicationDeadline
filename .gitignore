@@ -23,3 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 src/server/.env
 src/server/deadline_db.sql
+*.sql

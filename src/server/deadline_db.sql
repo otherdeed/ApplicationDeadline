@@ -58,7 +58,8 @@ CREATE TABLE `folders` (
   `id_group` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
+-- 
+
 -- Дамп данных таблицы `folders`
 --
 
