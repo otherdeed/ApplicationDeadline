@@ -13,12 +13,8 @@ const group = {
                         name: 'string',
                         due_date: 'date',
                         description: 'text',
-                        typereMinder: 'per day || in a week || for any number of days',
                         priority: '1-3'
                 }]
             }
     ]
 }
-
-email adress = help@deadlineminder.ru
-email password = gv&il53&0QOF
