@@ -52,7 +52,6 @@ INSERT INTO `deadlines` (`id_deadline`, `name`, `due_date`, `description`, `prio
 --
 -- Структура таблицы `folders`
 --
-
 CREATE TABLE `folders` (
   `id_folder` varchar(20) NOT NULL,
   `name` varchar(100) NOT NULL,
